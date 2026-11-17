@@ -1,0 +1,824 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video Downloader — Preview</title>
+<style>
+/* ===== App styles (shared with static/style.css) ===== */
+:root {
+  color-scheme: light;
+  --bg: #f0f0f3;
+  --panel: #ffffff;
+  --panel-2: #f6f6f8;
+  --line: #e1e1e6;
+  --line-strong: #c9c9d0;
+  --text: #1d1d1f;
+  --text-2: #5c5c66;
+  --text-3: #6e6e78;
+  --accent: #2f5bd3;
+  --accent-hover: #2650c0;
+  --accent-text: #ffffff;
+  --accent-soft: #e6ecfb;
+  --render: #a65800;
+  --render-soft: #fbefe1;
+  --ok: #1e7f43;
+  --ok-soft: #e3f3e8;
+  --danger: #c0322b;
+  --danger-soft: #fbe9e8;
+  --focus: #2f5bd3;
+  --shadow: 0 1px 2px rgba(20, 20, 40, .06), 0 8px 24px -8px rgba(20, 20, 40, .12);
+  --shadow-sm: 0 1px 2px rgba(20, 20, 40, .08);
+  --skeleton: #e8e8ec;
+  --skeleton-hi: #f4f4f7;
+  --radius: 14px;
+  --radius-sm: 9px;
+  --ease: cubic-bezier(.16, 1, .3, 1);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #18181b;
+    --panel: #232327;
+    --panel-2: #2b2b30;
+    --line: #36363c;
+    --line-strong: #4a4a52;
+    --text: #f2f2f4;
+    --text-2: #b0b0b8;
+    --text-3: #9a9aa3;
+    --accent: #7c97ff;
+    --accent-hover: #93a9ff;
+    --accent-text: #0f1530;
+    --accent-soft: #2a3150;
+    --render: #ffb24d;
+    --render-soft: #3d2e1a;
+    --ok: #5fd28a;
+    --ok-soft: #1d3326;
+    --danger: #ff7b72;
+    --danger-soft: #3d2222;
+    --focus: #7c97ff;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 10px 28px -10px rgba(0, 0, 0, .55);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .35);
+    --skeleton: #2e2e33;
+    --skeleton-hi: #38383e;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #18181b;
+  --panel: #232327;
+  --panel-2: #2b2b30;
+  --line: #36363c;
+  --line-strong: #4a4a52;
+  --text: #f2f2f4;
+  --text-2: #b0b0b8;
+  --text-3: #9a9aa3;
+  --accent: #7c97ff;
+  --accent-hover: #93a9ff;
+  --accent-text: #0f1530;
+  --accent-soft: #2a3150;
+  --render: #ffb24d;
+  --render-soft: #3d2e1a;
+  --ok: #5fd28a;
+  --ok-soft: #1d3326;
+  --danger: #ff7b72;
+  --danger-soft: #3d2222;
+  --focus: #7c97ff;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 10px 28px -10px rgba(0, 0, 0, .55);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .35);
+  --skeleton: #2e2e33;
+  --skeleton-hi: #38383e;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.45 -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--accent-soft); color: var(--text); }
+button, input, select { font: inherit; color: inherit; }
+:focus { outline: none; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 8px; }
+[hidden] { display: none !important; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.app {
+  width: 100%;
+  max-width: 592px;
+  margin: 0 auto;
+  padding: 28px 16px 32px;
+}
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+.app-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+}
+.icon { width: 18px; height: 18px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  min-height: 40px; padding: 0 16px;
+  border: 1px solid var(--line-strong); border-radius: 10px;
+  background: var(--panel); color: var(--text);
+  font-weight: 550; font-size: 14.5px;
+  cursor: pointer; white-space: nowrap;
+  box-shadow: var(--shadow-sm);
+  transition: background .15s, border-color .15s, transform .1s;
+}
+.btn:hover { background: var(--panel-2); }
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: .5; cursor: default; }
+.btn-primary { background: var(--accent); border-color: transparent; color: var(--accent-text); }
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-lg { min-height: 46px; font-size: 15.5px; padding: 0 22px; }
+.btn-block { width: 100%; }
+.btn-quiet { border-color: transparent; background: transparent; box-shadow: none; color: var(--text-2); }
+.btn-quiet:hover { background: var(--panel-2); color: var(--text); }
+.btn-icon { width: 38px; min-height: 38px; padding: 0; }
+.link-btn { border: 0; background: none; padding: 4px 2px; color: var(--accent); font-weight: 550; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: transparent; }
+.link-btn:hover { text-decoration-color: currentColor; }
+
+/* Paste field */
+.field-wrap { position: relative; }
+.url-input {
+  width: 100%; height: 58px;
+  padding: 0 92px 0 48px;
+  border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--panel); box-shadow: var(--shadow);
+  font-size: 17px; caret-color: var(--accent);
+  transition: border-color .15s, box-shadow .15s;
+}
+.url-input::placeholder { color: var(--text-3); }
+.url-input:focus { border-color: var(--accent); box-shadow: var(--shadow), 0 0 0 4px var(--accent-soft); outline: none; }
+.field-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-3); pointer-events: none; }
+.field-hint {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  padding: 3px 8px; border: 1px solid var(--line); border-radius: 6px;
+  font-size: 12px; color: var(--text-3); background: var(--panel-2); pointer-events: none;
+}
+
+.stack > * + * { margin-top: 16px; }
+
+/* Panels */
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px;
+  animation: rise .35s var(--ease) both;
+}
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } }
+
+/* Media card */
+.media { display: flex; gap: 16px; align-items: flex-start; }
+.thumb {
+  position: relative; flex: none;
+  width: 168px; aspect-ratio: 16 / 9;
+  border-radius: 9px; overflow: hidden;
+  background: var(--panel-2);
+}
+.thumb img, .thumb .thumb-fake { width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumb-fake { background: linear-gradient(180deg, #9fb7c9 0%, #c8d3c0 48%, #6f8a5c 49%, #4f6b44 100%); }
+.thumb-time {
+  position: absolute; right: 6px; bottom: 6px;
+  padding: 1px 6px; border-radius: 5px;
+  background: rgba(0, 0, 0, .72); color: #fff;
+  font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums;
+}
+.media-meta { min-width: 0; flex: 1; padding-top: 2px; }
+.media-title {
+  margin: 0 0 4px; font-size: 16.5px; font-weight: 620; line-height: 1.3; letter-spacing: -0.01em;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.media-sub { margin: 0; color: var(--text-2); font-size: 14px; }
+.media-sub span + span::before { content: ""; display: inline-block; width: 3px; height: 3px; margin: 0 8px 3px; border-radius: 50%; background: var(--text-3); vertical-align: middle; }
+.media-site { margin: 8px 0 0; font-size: 13px; color: var(--text-3); }
+
+/* Skeleton */
+.sk { background: linear-gradient(90deg, var(--skeleton) 0%, var(--skeleton-hi) 50%, var(--skeleton) 100%); background-size: 200% 100%; animation: shimmer 1.2s linear infinite; border-radius: 6px; }
+.sk-line { height: 14px; margin-bottom: 10px; }
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+
+/* Options */
+.options { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
+.opt-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.opt-row + .opt-row { margin-top: 14px; }
+.opt-label { width: 92px; flex: none; font-size: 14px; color: var(--text-2); }
+.segmented {
+  display: inline-flex; padding: 3px; gap: 2px;
+  border-radius: 10px; background: var(--panel-2); border: 1px solid var(--line);
+}
+.segmented button {
+  min-width: 84px; min-height: 32px; padding: 0 14px;
+  border: 0; border-radius: 7px; background: transparent;
+  color: var(--text-2); font-weight: 550; font-size: 14px; cursor: pointer;
+  transition: background .2s var(--ease), color .2s;
+}
+.segmented button[aria-checked="true"] { background: var(--panel); color: var(--text); box-shadow: var(--shadow-sm), 0 0 0 1px var(--line); }
+.segmented.wide { display: flex; width: 100%; }
+.segmented.wide button { flex: 1; min-width: 0; padding: 0 6px; }
+.select-wrap { position: relative; flex: 1; min-width: 180px; }
+.select {
+  width: 100%; min-height: 38px; padding: 0 36px 0 12px;
+  border: 1px solid var(--line-strong); border-radius: 9px;
+  background: var(--panel); appearance: none; -webkit-appearance: none; cursor: pointer;
+  font-variant-numeric: tabular-nums;
+}
+.select-wrap .icon { position: absolute; right: 11px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; pointer-events: none; color: var(--text-2); }
+.opt-note { margin: 10px 0 0 104px; font-size: 13px; color: var(--text-3); }
+.actions { margin-top: 20px; }
+
+/* Progress */
+.steps { display: flex; gap: 6px; margin: 0 0 18px; padding: 0; list-style: none; }
+.steps li { flex: 1; font-size: 12.5px; color: var(--text-3); font-weight: 550; }
+.steps li::before { content: ""; display: block; height: 3px; margin-bottom: 7px; border-radius: 2px; background: var(--line); transition: background .3s; }
+.steps li.done { color: var(--text-2); }
+.steps li.done::before { background: var(--text-3); }
+.steps li.current { color: var(--text); }
+.steps li.current::before { background: var(--accent); }
+.steps li.current.render::before { background: var(--render); }
+
+.prog-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.prog-label { font-weight: 600; font-size: 15px; }
+.prog-pct { font-size: 26px; font-weight: 650; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.timeline {
+  position: relative; height: 10px; border-radius: 5px;
+  background: var(--panel-2); border: 1px solid var(--line);
+  background-image: repeating-linear-gradient(90deg, transparent 0 calc(10% - 1px), var(--line) calc(10% - 1px) 10%);
+}
+.timeline-fill {
+  position: absolute; inset: 0 auto 0 0; width: 0;
+  border-radius: 5px 0 0 5px; background: var(--accent);
+  transition: width .45s var(--ease);
+}
+.timeline-head {
+  position: absolute; top: -5px; bottom: -5px; left: 0; width: 2px;
+  margin-left: -1px; border-radius: 1px; background: var(--text);
+  transition: left .45s var(--ease);
+}
+.timeline-head::before {
+  content: ""; position: absolute; top: -3px; left: -4px; width: 10px; height: 6px;
+  border-radius: 2px 2px 5px 5px; background: var(--text);
+}
+.is-render .timeline-fill { background: var(--render); }
+.prog-stats { display: flex; gap: 22px; margin-top: 12px; font-size: 13.5px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.prog-stats b { color: var(--text); font-weight: 600; }
+.prog-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 18px; }
+.prog-note { font-size: 13px; color: var(--text-3); }
+
+/* Done */
+.done-head { display: flex; gap: 12px; align-items: flex-start; }
+.badge-ok { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--ok-soft); color: var(--ok); animation: pop .4s var(--ease) both; }
+@keyframes pop { from { transform: scale(.6); opacity: 0; } }
+.done-title { margin: 0; font-weight: 620; font-size: 16px; }
+.done-file { margin: 3px 0 0; font-size: 13.5px; color: var(--text-2); word-break: break-all; }
+.done-checks { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.chip { padding: 2px 9px; border-radius: 999px; font-size: 12.5px; font-weight: 550; background: var(--panel-2); color: var(--text-2); border: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.btn-row .btn { flex: 1; min-width: 140px; }
+
+/* Error / notice */
+.notice { display: flex; gap: 12px; align-items: flex-start; }
+.notice-icon { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--danger-soft); color: var(--danger); }
+.notice-title { margin: 0; font-weight: 620; font-size: 16px; }
+.notice-body { margin: 4px 0 0; color: var(--text-2); font-size: 14.5px; }
+.notice-detail { margin: 12px 0 0; font-size: 12.5px; color: var(--text-3); }
+.notice-detail summary { cursor: pointer; }
+.notice-detail pre { margin: 8px 0 0; padding: 10px; border-radius: 8px; background: var(--panel-2); white-space: pre-wrap; word-break: break-word; font: 12px/1.5 ui-monospace, "SF Mono", Menlo, monospace; color: var(--text-2); }
+
+.code-row { display: flex; gap: 8px; margin-top: 14px; }
+.code {
+  flex: 1; display: flex; align-items: center; min-height: 40px; padding: 0 12px;
+  border-radius: 9px; background: var(--panel-2); border: 1px solid var(--line);
+  font: 14px ui-monospace, "SF Mono", Menlo, monospace; user-select: all; overflow-x: auto; white-space: nowrap;
+}
+.env-list { margin: 14px 0 0; padding: 0; list-style: none; font-size: 14px; }
+.env-list li { display: flex; justify-content: space-between; padding: 8px 0; border-top: 1px solid var(--line); }
+.env-list .ok { color: var(--ok); font-weight: 550; }
+.env-list .missing { color: var(--danger); font-weight: 550; }
+
+/* Recent */
+.section-title { margin: 30px 0 10px; font-size: 14px; font-weight: 620; color: var(--text-2); }
+.recent { margin: 0; padding: 0; list-style: none; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; }
+.recent li { display: flex; align-items: center; gap: 12px; padding: 10px 8px 10px 14px; }
+.recent li + li { border-top: 1px solid var(--line); }
+.recent-kind { flex: none; color: var(--text-3); }
+.recent-main { flex: 1; min-width: 0; }
+.recent-title { margin: 0; font-size: 14.5px; font-weight: 550; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.recent-meta { margin: 1px 0 0; font-size: 12.5px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+.recent-meta span + span::before { content: ""; display: inline-block; width: 3px; height: 3px; margin: 0 7px 3px; border-radius: 50%; background: var(--text-3); vertical-align: middle; }
+.recent-actions { display: flex; flex: none; }
+.empty-recent { padding: 18px 14px; color: var(--text-3); font-size: 14px; text-align: center; }
+
+/* Settings */
+.settings-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.settings-head h2 { margin: 0; font-size: 17px; font-weight: 650; }
+.setting { padding: 16px 0; border-top: 1px solid var(--line); }
+.setting:first-of-type { border-top: 0; }
+.setting-label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14.5px; }
+.setting-help { margin: 8px 0 0; font-size: 13px; color: var(--text-3); }
+.text-input {
+  width: 100%; min-height: 40px; padding: 0 12px;
+  border: 1px solid var(--line-strong); border-radius: 9px; background: var(--panel);
+}
+.text-input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); outline: none; }
+.setting-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.version { font-size: 13.5px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.saved { font-size: 13px; color: var(--ok); font-weight: 550; }
+
+.app-footer { margin-top: 34px; text-align: center; font-size: 12.5px; color: var(--text-3); }
+
+@media (max-width: 520px) {
+  .app { padding-top: 18px; }
+  .media { flex-direction: column; gap: 12px; }
+  .thumb { width: 100%; }
+  .opt-label { width: 100%; }
+  .opt-note { margin-left: 0; }
+  .field-hint { display: none; }
+  .url-input { padding-right: 16px; font-size: 16px; }
+  .prog-stats { gap: 14px; flex-wrap: wrap; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+/* ===== Preview-only chrome ===== */
+.pv-bar {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+  padding: 10px 16px; border-bottom: 1px dashed var(--line-strong);
+  background: var(--bg); font-size: 12.5px;
+}
+.pv-bar strong { margin-right: 6px; color: var(--text-2); font-weight: 600; }
+.pv-bar button {
+  padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--panel); color: var(--text-2); font-size: 12.5px; cursor: pointer;
+}
+.pv-bar button[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
+.pv-bar .pv-theme { margin-left: auto; }
+</style>
+</head>
+<body>
+
+<div class="pv-bar" role="toolbar" aria-label="Preview states">
+  <strong>Preview</strong>
+  <button data-go="empty">Empty</button>
+  <button data-go="fetching">Fetching</button>
+  <button data-go="video">Video ready</button>
+  <button data-go="audio">Audio ready</button>
+  <button data-go="downloading">Downloading</button>
+  <button data-go="converting">Converting</button>
+  <button data-go="done">Done</button>
+  <button data-go="error">Error (Instagram)</button>
+  <button data-go="missing">Missing ffmpeg</button>
+  <button data-go="settings">Settings</button>
+  <button class="pv-theme" id="pv-theme">Theme: auto</button>
+</div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3.2-3.2a4.5 4.5 0 0 0-6.4-6.4L12 5.6"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3.2 3.2a4.5 4.5 0 0 0 6.4 6.4l1.2-1.2"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 8v5"/><path d="M12 16.5v.01"/><circle cx="12" cy="12" r="9"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h4.2l2 2h8.8A1.5 1.5 0 0 1 21 9.5v8a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></symbol>
+  <symbol id="i-film" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 5v14M17 5v14M3 9.5h4M3 14.5h4M17 9.5h4M17 14.5h4"/></symbol>
+  <symbol id="i-wave" viewBox="0 0 24 24"><path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 11v2"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+</svg>
+
+<main class="app" id="app">
+  <header class="app-header">
+    <h1 class="app-title">Video Downloader</h1>
+    <button class="btn btn-quiet btn-icon" id="open-settings" aria-label="Settings" title="Settings">
+      <svg class="icon"><use href="#i-gear"/></svg>
+    </button>
+  </header>
+
+  <!-- Environment check -->
+  <section class="panel" id="v-env" hidden aria-labelledby="env-title">
+    <div class="notice">
+      <div class="notice-icon"><svg class="icon"><use href="#i-alert"/></svg></div>
+      <div>
+        <h2 class="notice-title" id="env-title">ffmpeg is not installed</h2>
+        <p class="notice-body">ffmpeg and ffprobe merge video with audio and check that files play in QuickTime. Run this in Terminal, then check again.</p>
+      </div>
+    </div>
+    <div class="code-row">
+      <code class="code" id="env-cmd">brew install ffmpeg</code>
+      <button class="btn" id="copy-cmd"><svg class="icon"><use href="#i-copy"/></svg><span>Copy</span></button>
+    </div>
+    <ul class="env-list">
+      <li><span>yt-dlp</span><span class="ok">2026.08.19</span></li>
+      <li><span>ffmpeg</span><span class="missing">Not found</span></li>
+      <li><span>ffprobe</span><span class="missing">Not found</span></li>
+    </ul>
+    <div class="actions"><button class="btn btn-primary btn-lg btn-block" id="env-recheck">Check again</button></div>
+  </section>
+
+  <!-- Main flow -->
+  <div class="stack" id="v-main">
+    <form class="field-wrap" id="url-form" autocomplete="off">
+      <label for="url" class="sr-only">Video link</label>
+      <svg class="icon field-icon"><use href="#i-link"/></svg>
+      <input class="url-input" id="url" type="url" inputmode="url" spellcheck="false"
+             placeholder="Paste a link from YouTube, Instagram, TikTok…" autofocus>
+      <span class="field-hint" aria-hidden="true">Return</span>
+    </form>
+
+    <!-- Skeleton while fetching -->
+    <section class="panel" id="v-skeleton" hidden aria-busy="true" aria-label="Loading video details">
+      <div class="media">
+        <div class="thumb sk"></div>
+        <div class="media-meta">
+          <div class="sk sk-line" style="width:90%"></div>
+          <div class="sk sk-line" style="width:60%"></div>
+          <div class="sk sk-line" style="width:35%;margin-bottom:0"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Preview card with options / progress / done -->
+    <section class="panel" id="v-card" hidden aria-labelledby="media-title">
+      <div class="media">
+        <div class="thumb"><div class="thumb-fake" role="img" aria-label="Thumbnail"></div><span class="thumb-time">0:19</span></div>
+        <div class="media-meta">
+          <h2 class="media-title" id="media-title">Me at the zoo</h2>
+          <p class="media-sub"><span>jawed</span><span>0:19</span></p>
+          <p class="media-site">youtube.com</p>
+        </div>
+      </div>
+
+      <div class="options" id="v-options">
+        <div class="opt-row">
+          <span class="opt-label" id="lbl-mode">Download as</span>
+          <div class="segmented" role="radiogroup" aria-labelledby="lbl-mode" id="mode">
+            <button type="button" role="radio" aria-checked="true" data-mode="video">Video</button>
+            <button type="button" role="radio" aria-checked="false" data-mode="audio">Audio</button>
+          </div>
+        </div>
+        <div class="opt-row" id="row-res">
+          <label class="opt-label" for="res">Resolution</label>
+          <div class="select-wrap">
+            <select class="select" id="res">
+              <option value="best">Best (up to 1080p)</option>
+              <option value="1080">1080p</option>
+              <option value="720">720p</option>
+              <option value="480">480p</option>
+              <option value="360">360p</option>
+              <option value="240">240p</option>
+            </select>
+            <svg class="icon"><use href="#i-chevron"/></svg>
+          </div>
+        </div>
+        <div class="opt-row" id="row-afmt" hidden>
+          <span class="opt-label" id="lbl-afmt">Format</span>
+          <div class="segmented" role="radiogroup" aria-labelledby="lbl-afmt" id="afmt">
+            <button type="button" role="radio" aria-checked="true" data-afmt="mp3">MP3</button>
+            <button type="button" role="radio" aria-checked="false" data-afmt="m4a">M4A</button>
+          </div>
+        </div>
+        <p class="opt-note" id="opt-note">MP4, H.264 and AAC. Plays in QuickTime and Quick Look.</p>
+        <div class="actions"><button class="btn btn-primary btn-lg btn-block" id="download">Download video</button></div>
+      </div>
+
+      <div class="options" id="v-progress" hidden>
+        <ol class="steps" id="steps" aria-label="Progress">
+          <li data-step="fetching">Fetching</li>
+          <li data-step="downloading">Downloading</li>
+          <li data-step="converting">Converting</li>
+          <li data-step="done">Done</li>
+        </ol>
+        <div id="prog-live" aria-live="polite">
+          <div class="prog-head">
+            <span class="prog-label" id="prog-label">Downloading</span>
+            <span class="prog-pct" id="prog-pct">0%</span>
+          </div>
+          <div class="timeline" role="progressbar" aria-labelledby="prog-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="bar">
+            <div class="timeline-fill" id="bar-fill"></div>
+            <div class="timeline-head" id="bar-head"></div>
+          </div>
+        </div>
+        <div class="prog-stats" id="prog-stats">
+          <span>Speed <b id="st-speed">3.4 MB/s</b></span>
+          <span>Time left <b id="st-eta">0:06</b></span>
+          <span>Size <b id="st-size">9.8 MB</b></span>
+        </div>
+        <div class="prog-foot">
+          <span class="prog-note" id="prog-note">720p, MP4</span>
+          <button class="btn" id="cancel">Cancel</button>
+        </div>
+      </div>
+
+      <div class="options" id="v-done" hidden>
+        <div class="done-head" aria-live="polite">
+          <div class="badge-ok"><svg class="icon"><use href="#i-check"/></svg></div>
+          <div>
+            <h3 class="done-title">Saved to Video Downloader</h3>
+            <p class="done-file">Me at the zoo [jNQXAC9IVRw].mp4</p>
+            <div class="done-checks">
+              <span class="chip">H.264</span><span class="chip">AAC</span><span class="chip">720p</span><span class="chip">0.8 MB</span>
+            </div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary btn-lg"><svg class="icon"><use href="#i-folder"/></svg>Show in Finder</button>
+          <button class="btn btn-lg"><svg class="icon"><use href="#i-play"/></svg>Open</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Error -->
+    <section class="panel" id="v-error" hidden role="alert">
+      <div class="notice">
+        <div class="notice-icon"><svg class="icon"><use href="#i-alert"/></svg></div>
+        <div>
+          <h2 class="notice-title">Instagram blocked the request</h2>
+          <p class="notice-body">Instagram is rate-limiting you. Wait a few minutes, or turn on browser cookies in Settings.</p>
+          <details class="notice-detail">
+            <summary>Details</summary>
+            <pre>ERROR: [Instagram] Deeb1BZMBVJ: Requested content is not available, rate-limit reached or login required. HTTP Error 401: Unauthorized</pre>
+          </details>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary btn-lg" id="retry">Retry</button>
+        <button class="btn btn-lg" id="err-settings">Open Settings</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- Settings -->
+  <section class="panel" id="v-settings" hidden aria-labelledby="settings-title">
+    <div class="settings-head">
+      <h2 id="settings-title">Settings</h2>
+      <button class="btn" id="close-settings">Done</button>
+    </div>
+    <div class="setting">
+      <label class="setting-label" for="folder">Download folder</label>
+      <input class="text-input" id="folder" value="~/Downloads/Video Downloader" spellcheck="false">
+      <p class="setting-help">Created if it doesn’t exist</p>
+    </div>
+    <div class="setting">
+      <span class="setting-label" id="lbl-cookies">Use cookies from browser</span>
+      <div class="segmented wide" role="radiogroup" aria-labelledby="lbl-cookies" id="cookies">
+        <button type="button" role="radio" aria-checked="true" data-b="off">Off</button>
+        <button type="button" role="radio" aria-checked="false" data-b="safari">Safari</button>
+        <button type="button" role="radio" aria-checked="false" data-b="chrome">Chrome</button>
+        <button type="button" role="radio" aria-checked="false" data-b="arc">Arc</button>
+        <button type="button" role="radio" aria-checked="false" data-b="firefox">Firefox</button>
+      </div>
+      <p class="setting-help" id="cookie-help">For Instagram and other sites that need a login. Log in to the site in that browser first.</p>
+    </div>
+    <div class="setting">
+      <div class="setting-row">
+        <div>
+          <span class="setting-label" style="margin:0">yt-dlp</span>
+          <span class="version">Version 2026.08.19</span>
+        </div>
+        <button class="btn" id="update">Update yt-dlp</button>
+      </div>
+      <p class="setting-help" id="update-status" aria-live="polite">Update when a site that used to work stops working</p>
+    </div>
+    <p class="saved" id="saved" aria-live="polite"></p>
+  </section>
+
+  <!-- Recent -->
+  <section id="v-recent" aria-labelledby="recent-title">
+    <h2 class="section-title" id="recent-title">Recent downloads</h2>
+    <ul class="recent" id="recent"></ul>
+  </section>
+
+  <footer class="app-footer">Only download content you have the right to save.</footer>
+</main>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const app = $('app');
+  const RECENT = [
+    { kind: 'video', title: 'Studio walkthrough, behind the scenes', meta: ['MP4', '1080p', '48.2 MB'], when: 'Today' },
+    { kind: 'audio', title: 'Interview room tone reference', meta: ['MP3', '4.1 MB'], when: 'Today' },
+    { kind: 'video', title: 'Reel: sunrise timelapse over the harbour', meta: ['MP4', '720p', '12.6 MB'], when: 'Yesterday' },
+    { kind: 'video', title: 'Product B-roll pack, take 3', meta: ['MP4', '1080p', '131 MB'], when: 'Nov 14' },
+  ];
+  const DONE_ITEM = { kind: 'video', title: 'Me at the zoo', meta: ['MP4', '720p', '0.8 MB'], when: 'Just now' };
+
+  let state = 'empty';
+  let mode = 'video';
+  let afmt = 'mp3';
+  let timer = null;
+  let pct = 0;
+  let showDoneInRecent = false;
+
+  function renderRecent() {
+    const list = showDoneInRecent ? [DONE_ITEM, ...RECENT] : RECENT;
+    const ul = $('recent');
+    if (!list.length) { ul.innerHTML = '<li class="empty-recent">Finished downloads appear here</li>'; return; }
+    ul.innerHTML = list.map((r) => `
+      <li>
+        <svg class="icon recent-kind" aria-hidden="true"><use href="#i-${r.kind === 'audio' ? 'wave' : 'film'}"/></svg>
+        <div class="recent-main">
+          <p class="recent-title">${r.title}</p>
+          <p class="recent-meta">${r.meta.map((m) => `<span>${m}</span>`).join('')}<span>${r.when}</span></p>
+        </div>
+        <div class="recent-actions">
+          <button class="btn btn-quiet btn-icon" aria-label="Show ${r.title} in Finder" title="Show in Finder"><svg class="icon"><use href="#i-folder"/></svg></button>
+          <button class="btn btn-quiet btn-icon" aria-label="Open ${r.title}" title="Open"><svg class="icon"><use href="#i-play"/></svg></button>
+        </div>
+      </li>`).join('');
+  }
+
+  function setRadio(group, attr, value) {
+    group.querySelectorAll('[role=radio]').forEach((b) => {
+      const on = b.dataset[attr] === value;
+      b.setAttribute('aria-checked', on);
+      b.tabIndex = on ? 0 : -1;
+    });
+  }
+
+  function applyMode() {
+    setRadio($('mode'), 'mode', mode);
+    setRadio($('afmt'), 'afmt', afmt);
+    $('row-res').hidden = mode !== 'video';
+    $('row-afmt').hidden = mode !== 'audio';
+    $('download').textContent = mode === 'video' ? 'Download video' : `Download ${afmt.toUpperCase()}`;
+    $('opt-note').textContent = mode === 'video'
+      ? 'MP4, H.264 and AAC. Plays in QuickTime and Quick Look.'
+      : afmt === 'mp3' ? 'MP3 at 192 kbps, title saved in the file' : 'AAC in M4A, title saved in the file';
+  }
+
+  function setSteps(current) {
+    const order = ['fetching', 'downloading', 'converting', 'done'];
+    const idx = order.indexOf(current);
+    $('steps').querySelectorAll('li').forEach((li, i) => {
+      li.className = i < idx ? 'done' : i === idx ? 'current' + (current === 'converting' ? ' render' : '') : '';
+      if (i === idx) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current');
+    });
+  }
+
+  function setBar(p) {
+    pct = p;
+    const v = Math.round(p);
+    $('bar-fill').style.width = p + '%';
+    $('bar-head').style.left = p + '%';
+    $('prog-pct').textContent = v + '%';
+    $('bar').setAttribute('aria-valuenow', v);
+  }
+
+  function stop() { clearInterval(timer); timer = null; }
+
+  function go(next) {
+    stop();
+    state = next;
+    document.querySelectorAll('[data-go]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.go === next));
+
+    const show = (id, on) => { $(id).hidden = !on; };
+    const inFlow = !['missing', 'settings'].includes(next);
+    show('v-env', next === 'missing');
+    show('v-settings', next === 'settings');
+    show('v-main', inFlow);
+    show('v-recent', inFlow);
+    show('open-settings', next !== 'settings');
+    show('v-skeleton', next === 'fetching');
+    show('v-card', ['video', 'audio', 'downloading', 'converting', 'done'].includes(next));
+    show('v-options', next === 'video' || next === 'audio');
+    show('v-progress', next === 'downloading' || next === 'converting');
+    show('v-done', next === 'done');
+    show('v-error', next === 'error');
+
+    const url = $('url');
+    url.disabled = ['downloading', 'converting'].includes(next);
+    if (next === 'empty') url.value = '';
+    else if (next === 'error') url.value = 'https://www.instagram.com/reels/Deeb1BZMBVJ/';
+    else if (inFlow) url.value = 'https://www.youtube.com/watch?v=jNQXAC9IVRw';
+
+    if (next === 'video') { mode = 'video'; applyMode(); }
+    if (next === 'audio') { mode = 'audio'; applyMode(); }
+    showDoneInRecent = next === 'done';
+    renderRecent();
+
+    if (next === 'downloading') startDownload();
+    if (next === 'converting') startConvert();
+    if (next === 'done') setSteps('done');
+    if (next === 'empty') url.focus();
+    if (next === 'settings') $('folder').focus();
+  }
+
+  function startDownload() {
+    setSteps('downloading');
+    $('v-progress').classList.remove('is-render');
+    $('prog-label').textContent = 'Downloading';
+    $('prog-stats').hidden = false;
+    $('prog-note').textContent = mode === 'video' ? '720p, MP4' : afmt.toUpperCase();
+    setBar(0);
+    timer = setInterval(() => {
+      const next = Math.min(100, pct + 2 + Math.random() * 5);
+      setBar(next);
+      $('st-speed').textContent = (2.8 + Math.random()).toFixed(1) + ' MB/s';
+      const secs = Math.max(0, Math.round((100 - next) / 9));
+      $('st-eta').textContent = '0:' + String(secs).padStart(2, '0');
+      if (next >= 100) { stop(); setTimeout(() => go(mode === 'video' ? 'converting' : 'done'), 350); }
+    }, 300);
+  }
+
+  function startConvert() {
+    setSteps('converting');
+    $('v-progress').classList.add('is-render');
+    $('prog-label').textContent = 'Converting for QuickTime…';
+    $('prog-stats').hidden = true;
+    $('prog-note').textContent = 'Source was VP9. Re-encoding to H.264 and AAC.';
+    setBar(0);
+    timer = setInterval(() => {
+      const next = Math.min(100, pct + 4 + Math.random() * 6);
+      setBar(next);
+      if (next >= 100) { stop(); setTimeout(() => go('done'), 350); }
+    }, 300);
+  }
+
+  // Controls
+  document.querySelectorAll('[data-go]').forEach((b) => b.addEventListener('click', () => go(b.dataset.go)));
+  $('mode').addEventListener('click', (e) => { const b = e.target.closest('[data-mode]'); if (b) { mode = b.dataset.mode; applyMode(); } });
+  $('afmt').addEventListener('click', (e) => { const b = e.target.closest('[data-afmt]'); if (b) { afmt = b.dataset.afmt; applyMode(); } });
+  $('cookies').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-b]'); if (!b) return;
+    setRadio($('cookies'), 'b', b.dataset.b);
+    $('cookie-help').textContent = b.dataset.b === 'safari'
+      ? 'Safari keeps cookies in a protected folder. Give Terminal Full Disk Access in System Settings › Privacy & Security, then restart the app.'
+      : 'For Instagram and other sites that need a login. Log in to the site in that browser first.';
+    $('saved').textContent = 'Saved';
+  });
+  // Arrow keys move between radio buttons in a segmented control
+  document.querySelectorAll('[role=radiogroup]').forEach((g) => g.addEventListener('keydown', (e) => {
+    if (!['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+    const items = [...g.querySelectorAll('[role=radio]')];
+    const i = items.indexOf(document.activeElement);
+    const n = items[(i + (e.key === 'ArrowRight' ? 1 : -1) + items.length) % items.length];
+    n.focus(); n.click(); e.preventDefault();
+  }));
+  $('url-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    go('fetching');
+    timer = setTimeout(() => go('video'), 1100);
+  });
+  $('download').addEventListener('click', () => go('downloading'));
+  $('cancel').addEventListener('click', () => { go(mode); $('opt-note').textContent = 'Download canceled. Partial files were removed.'; });
+  $('retry').addEventListener('click', () => { go('fetching'); timer = setTimeout(() => go('video'), 1100); });
+  $('err-settings').addEventListener('click', () => go('settings'));
+  $('open-settings').addEventListener('click', () => go('settings'));
+  $('close-settings').addEventListener('click', () => go('empty'));
+  $('env-recheck').addEventListener('click', () => go('empty'));
+  $('folder').addEventListener('change', () => { $('saved').textContent = 'Saved'; });
+  $('copy-cmd').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText($('env-cmd').textContent); } catch (_) {}
+    $('copy-cmd').querySelector('span').textContent = 'Copied';
+    setTimeout(() => { $('copy-cmd').querySelector('span').textContent = 'Copy'; }, 1500);
+  });
+  $('update').addEventListener('click', () => {
+    $('update').disabled = true;
+    $('update-status').textContent = 'Updating…';
+    setTimeout(() => { $('update').disabled = false; $('update-status').textContent = 'yt-dlp is up to date.'; }, 1200);
+  });
+
+  // Cmd+V anywhere focuses the link field
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'v') {
+      const t = document.activeElement;
+      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) return;
+      const url = $('url');
+      if (!$('v-main').hidden && !url.disabled) { url.value = ''; url.focus(); }
+    }
+  });
+
+  // Theme toggle (preview only)
+  const themes = ['auto', 'light', 'dark'];
+  let ti = 0;
+  $('pv-theme').addEventListener('click', () => {
+    ti = (ti + 1) % 3;
+    const t = themes[ti];
+    if (t === 'auto') document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.setAttribute('data-theme', t);
+    $('pv-theme').textContent = 'Theme: ' + t;
+  });
+
+  applyMode();
+  go('empty');
+})();
+</script>
+</body>
+</html>

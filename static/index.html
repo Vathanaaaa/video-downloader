@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video Downloader</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3.2-3.2a4.5 4.5 0 0 0-6.4-6.4L12 5.6"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3.2 3.2a4.5 4.5 0 0 0 6.4 6.4l1.2-1.2"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 8v5"/><path d="M12 16.5v.01"/><circle cx="12" cy="12" r="9"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h4.2l2 2h8.8A1.5 1.5 0 0 1 21 9.5v8a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></symbol>
+  <symbol id="i-film" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 5v14M17 5v14M3 9.5h4M3 14.5h4M17 9.5h4M17 14.5h4"/></symbol>
+  <symbol id="i-wave" viewBox="0 0 24 24"><path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 11v2"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></symbol>
+</svg>
+
+<main class="app" id="app">
+  <header class="app-header">
+    <h1 class="app-title">Video Downloader</h1>
+    <button class="btn btn-quiet btn-icon" id="open-settings" aria-label="Settings" title="Settings">
+      <svg class="icon"><use href="#i-gear"/></svg>
+    </button>
+  </header>
+
+  <!-- Environment check -->
+  <section class="panel" id="v-env" hidden aria-labelledby="env-title">
+    <div class="notice">
+      <div class="notice-icon"><svg class="icon"><use href="#i-alert"/></svg></div>
+      <div>
+        <h2 class="notice-title" id="env-title">ffmpeg is not installed</h2>
+        <p class="notice-body">ffmpeg and ffprobe merge video with audio and check that files play in QuickTime. Run this in Terminal, then check again.</p>
+      </div>
+    </div>
+    <div class="code-row">
+      <code class="code" id="env-cmd">brew install ffmpeg</code>
+      <button class="btn" id="copy-cmd"><svg class="icon"><use href="#i-copy"/></svg><span>Copy</span></button>
+    </div>
+    <ul class="env-list" id="env-list"></ul>
+    <div class="actions"><button class="btn btn-primary btn-lg btn-block" id="env-recheck">Check again</button></div>
+  </section>
+
+  <!-- Main flow -->
+  <div class="stack" id="v-main" hidden>
+    <form class="field-wrap" id="url-form" autocomplete="off">
+      <label for="url" class="sr-only">Video link</label>
+      <svg class="icon field-icon"><use href="#i-link"/></svg>
+      <input class="url-input" id="url" type="url" inputmode="url" spellcheck="false"
+             placeholder="Paste a link from YouTube, Instagram, TikTok…" autofocus>
+      <span class="field-hint" aria-hidden="true">Return</span>
+    </form>
+
+    <section class="panel" id="v-skeleton" hidden aria-busy="true" aria-label="Loading video details">
+      <div class="media">
+        <div class="thumb sk"></div>
+        <div class="media-meta">
+          <div class="sk sk-line" style="width:90%"></div>
+          <div class="sk sk-line" style="width:60%"></div>
+          <div class="sk sk-line" style="width:35%;margin-bottom:0"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="v-card" hidden aria-labelledby="media-title">
+      <div class="media">
+        <div class="thumb" id="thumb"><span class="thumb-time" id="thumb-time" hidden></span></div>
+        <div class="media-meta">
+          <h2 class="media-title" id="media-title"></h2>
+          <p class="media-sub" id="media-sub"></p>
+          <p class="media-site" id="media-site"></p>
+        </div>
+      </div>
+
+      <div class="options" id="v-options">
+        <div class="opt-row">
+          <span class="opt-label" id="lbl-mode">Download as</span>
+          <div class="segmented" role="radiogroup" aria-labelledby="lbl-mode" id="mode">
+            <button type="button" role="radio" aria-checked="true" data-mode="video">Video</button>
+            <button type="button" role="radio" aria-checked="false" data-mode="audio">Audio</button>
+          </div>
+        </div>
+        <div class="opt-row" id="row-res">
+          <label class="opt-label" for="res">Resolution</label>
+          <div class="select-wrap">
+            <select class="select" id="res"></select>
+            <svg class="icon"><use href="#i-chevron"/></svg>
+          </div>
+        </div>
+        <div class="opt-row" id="row-afmt" hidden>
+          <span class="opt-label" id="lbl-afmt">Format</span>
+          <div class="segmented" role="radiogroup" aria-labelledby="lbl-afmt" id="afmt">
+            <button type="button" role="radio" aria-checked="true" data-afmt="mp3">MP3</button>
+            <button type="button" role="radio" aria-checked="false" data-afmt="m4a">M4A</button>
+          </div>
+        </div>
+        <p class="opt-note" id="opt-note" aria-live="polite"></p>
+        <div class="actions"><button class="btn btn-primary btn-lg btn-block" id="download">Download video</button></div>
+      </div>
+
+      <div class="options" id="v-progress" hidden>
+        <ol class="steps" id="steps" aria-label="Progress">
+          <li data-step="fetching">Fetching</li>
+          <li data-step="downloading">Downloading</li>
+          <li data-step="converting">Converting</li>
+          <li data-step="done">Done</li>
+        </ol>
+        <div id="prog-live" aria-live="polite">
+          <div class="prog-head">
+            <span class="prog-label" id="prog-label">Fetching</span>
+            <span class="prog-pct" id="prog-pct"></span>
+          </div>
+          <div class="timeline" role="progressbar" aria-labelledby="prog-label" aria-valuemin="0" aria-valuemax="100" id="bar">
+            <div class="timeline-fill" id="bar-fill"></div>
+            <div class="timeline-head" id="bar-head"></div>
+          </div>
+        </div>
+        <div class="prog-stats" id="prog-stats">
+          <span>Speed <b id="st-speed">–</b></span>
+          <span>Time left <b id="st-eta">–</b></span>
+          <span>Size <b id="st-size">–</b></span>
+        </div>
+        <div class="prog-foot">
+          <span class="prog-note" id="prog-note"></span>
+          <button class="btn" id="cancel">Cancel</button>
+        </div>
+      </div>
+
+      <div class="options" id="v-done" hidden>
+        <div class="done-head" aria-live="polite">
+          <div class="badge-ok"><svg class="icon"><use href="#i-check"/></svg></div>
+          <div>
+            <h3 class="done-title" id="done-title"></h3>
+            <p class="done-file" id="done-file"></p>
+            <div class="done-checks" id="done-checks"></div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary btn-lg" id="done-reveal"><svg class="icon"><use href="#i-folder"/></svg>Show in Finder</button>
+          <button class="btn btn-lg" id="done-open"><svg class="icon"><use href="#i-play"/></svg>Open</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="v-error" hidden role="alert">
+      <div class="notice">
+        <div class="notice-icon"><svg class="icon"><use href="#i-alert"/></svg></div>
+        <div>
+          <h2 class="notice-title" id="err-title"></h2>
+          <p class="notice-body" id="err-message"></p>
+          <details class="notice-detail" id="err-details">
+            <summary>Details</summary>
+            <pre id="err-detail"></pre>
+          </details>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary btn-lg" id="retry">Retry</button>
+        <button class="btn btn-lg" id="err-settings">Open Settings</button>
+      </div>
+    </section>
+  </div>
+
+  <section class="panel" id="v-settings" hidden aria-labelledby="settings-title">
+    <div class="settings-head">
+      <h2 id="settings-title">Settings</h2>
+      <button class="btn" id="close-settings">Done</button>
+    </div>
+    <div class="setting">
+      <label class="setting-label" for="folder">Download folder</label>
+      <input class="text-input" id="folder" spellcheck="false">
+      <p class="setting-help" id="folder-help">Created if it doesn’t exist</p>
+    </div>
+    <div class="setting">
+      <span class="setting-label" id="lbl-cookies">Use cookies from browser</span>
+      <div class="segmented wide" role="radiogroup" aria-labelledby="lbl-cookies" id="cookies">
+        <button type="button" role="radio" aria-checked="true" data-b="off">Off</button>
+        <button type="button" role="radio" aria-checked="false" data-b="safari">Safari</button>
+        <button type="button" role="radio" aria-checked="false" data-b="chrome">Chrome</button>
+        <button type="button" role="radio" aria-checked="false" data-b="arc">Arc</button>
+        <button type="button" role="radio" aria-checked="false" data-b="firefox">Firefox</button>
+      </div>
+      <p class="setting-help" id="cookie-help"></p>
+    </div>
+    <div class="setting">
+      <div class="setting-row">
+        <div>
+          <span class="setting-label" style="margin:0">yt-dlp</span>
+          <span class="version" id="ytdlp-version"></span>
+        </div>
+        <button class="btn" id="update">Update yt-dlp</button>
+      </div>
+      <p class="setting-help" id="update-status" aria-live="polite">Update when a site that used to work stops working</p>
+    </div>
+    <p class="saved" id="saved" aria-live="polite"></p>
+  </section>
+
+  <section id="v-recent" hidden aria-labelledby="recent-title">
+    <h2 class="section-title" id="recent-title">Recent downloads</h2>
+    <ul class="recent" id="recent"></ul>
+  </section>
+
+  <footer class="app-footer">Only download content you have the right to save.</footer>
+</main>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
