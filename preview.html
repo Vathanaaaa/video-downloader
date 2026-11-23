@@ -116,23 +116,23 @@ button, input, select { font: inherit; color: inherit; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 22px;
+  margin-bottom: 24px;
 }
 .app-title {
   margin: 0;
   font-size: 20px;
-  font-weight: 650;
+  font-weight: 600;
   letter-spacing: -0.015em;
 }
-.icon { width: 18px; height: 18px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.icon { width: 18px; height: 18px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 
 /* Buttons */
 .btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   min-height: 40px; padding: 0 16px;
   border: 1px solid var(--line-strong); border-radius: 10px;
   background: var(--panel); color: var(--text);
-  font-weight: 550; font-size: 14.5px;
+  font-weight: 500; font-size: 14px;
   cursor: pointer; white-space: nowrap;
   box-shadow: var(--shadow-sm);
   transition: background .15s, border-color .15s, transform .1s;
@@ -142,12 +142,12 @@ button, input, select { font: inherit; color: inherit; }
 .btn:disabled { opacity: .5; cursor: default; }
 .btn-primary { background: var(--accent); border-color: transparent; color: var(--accent-text); }
 .btn-primary:hover { background: var(--accent-hover); }
-.btn-lg { min-height: 46px; font-size: 15.5px; padding: 0 22px; }
+.btn-lg { min-height: 48px; font-size: 16px; padding: 0 24px; }
 .btn-block { width: 100%; }
 .btn-quiet { border-color: transparent; background: transparent; box-shadow: none; color: var(--text-2); }
 .btn-quiet:hover { background: var(--panel-2); color: var(--text); }
 .btn-icon { width: 38px; min-height: 38px; padding: 0; }
-.link-btn { border: 0; background: none; padding: 4px 2px; color: var(--accent); font-weight: 550; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: transparent; }
+.link-btn { border: 0; background: none; padding: 4px 2px; color: var(--accent); font-weight: 500; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: transparent; }
 .link-btn:hover { text-decoration-color: currentColor; }
 
 /* Paste field */
@@ -177,7 +177,7 @@ button, input, select { font: inherit; color: inherit; }
   border: 1px solid var(--line);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 18px;
+  padding: 20px;
   animation: rise .35s var(--ease) both;
 }
 @keyframes rise { from { opacity: 0; transform: translateY(6px); } }
@@ -200,7 +200,7 @@ button, input, select { font: inherit; color: inherit; }
 }
 .media-meta { min-width: 0; flex: 1; padding-top: 2px; }
 .media-title {
-  margin: 0 0 4px; font-size: 16.5px; font-weight: 620; line-height: 1.3; letter-spacing: -0.01em;
+  margin: 0 0 4px; font-size: 16px; font-weight: 600; line-height: 1.3;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
 .media-sub { margin: 0; color: var(--text-2); font-size: 14px; }
@@ -213,9 +213,9 @@ button, input, select { font: inherit; color: inherit; }
 @keyframes shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
 
 /* Options */
-.options { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
+.options { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line); }
 .opt-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-.opt-row + .opt-row { margin-top: 14px; }
+.opt-row + .opt-row { margin-top: 12px; }
 .opt-label { width: 92px; flex: none; font-size: 14px; color: var(--text-2); }
 .segmented {
   display: inline-flex; padding: 3px; gap: 2px;
@@ -224,7 +224,7 @@ button, input, select { font: inherit; color: inherit; }
 .segmented button {
   min-width: 84px; min-height: 32px; padding: 0 14px;
   border: 0; border-radius: 7px; background: transparent;
-  color: var(--text-2); font-weight: 550; font-size: 14px; cursor: pointer;
+  color: var(--text-2); font-weight: 500; font-size: 14px; cursor: pointer;
   transition: background .2s var(--ease), color .2s;
 }
 .segmented button[aria-checked="true"] { background: var(--panel); color: var(--text); box-shadow: var(--shadow-sm), 0 0 0 1px var(--line); }
@@ -238,13 +238,13 @@ button, input, select { font: inherit; color: inherit; }
   font-variant-numeric: tabular-nums;
 }
 .select-wrap .icon { position: absolute; right: 11px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; pointer-events: none; color: var(--text-2); }
-.opt-note { margin: 10px 0 0 104px; font-size: 13px; color: var(--text-3); }
+.opt-note { margin: 12px 0 0 104px; font-size: 13px; color: var(--text-3); }
 .actions { margin-top: 20px; }
 
 /* Progress */
-.steps { display: flex; gap: 6px; margin: 0 0 18px; padding: 0; list-style: none; }
-.steps li { flex: 1; font-size: 12.5px; color: var(--text-3); font-weight: 550; }
-.steps li::before { content: ""; display: block; height: 3px; margin-bottom: 7px; border-radius: 2px; background: var(--line); transition: background .3s; }
+.steps { display: flex; gap: 8px; margin: 0 0 20px; padding: 0; list-style: none; }
+.steps li { flex: 1; font-size: 13px; color: var(--text-3); font-weight: 500; }
+.steps li::before { content: ""; display: block; height: 3px; margin-bottom: 8px; border-radius: 2px; background: var(--line); transition: background .3s; }
 .steps li.done { color: var(--text-2); }
 .steps li.done::before { background: var(--text-3); }
 .steps li.current { color: var(--text); }
@@ -253,7 +253,7 @@ button, input, select { font: inherit; color: inherit; }
 
 .prog-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
 .prog-label { font-weight: 600; font-size: 15px; }
-.prog-pct { font-size: 26px; font-weight: 650; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.prog-pct { font-size: 26px; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
 .timeline {
   position: relative; height: 10px; border-radius: 5px;
   background: var(--panel-2); border: 1px solid var(--line);
@@ -274,28 +274,28 @@ button, input, select { font: inherit; color: inherit; }
   border-radius: 2px 2px 5px 5px; background: var(--text);
 }
 .is-render .timeline-fill { background: var(--render); }
-.prog-stats { display: flex; gap: 22px; margin-top: 12px; font-size: 13.5px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.prog-stats { display: flex; gap: 24px; margin-top: 12px; font-size: 13px; color: var(--text-2); font-variant-numeric: tabular-nums; }
 .prog-stats b { color: var(--text); font-weight: 600; }
-.prog-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 18px; }
+.prog-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 20px; }
 .prog-note { font-size: 13px; color: var(--text-3); }
 
 /* Done */
 .done-head { display: flex; gap: 12px; align-items: flex-start; }
 .badge-ok { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--ok-soft); color: var(--ok); animation: pop .4s var(--ease) both; }
 @keyframes pop { from { transform: scale(.6); opacity: 0; } }
-.done-title { margin: 0; font-weight: 620; font-size: 16px; }
-.done-file { margin: 3px 0 0; font-size: 13.5px; color: var(--text-2); word-break: break-all; }
-.done-checks { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-.chip { padding: 2px 9px; border-radius: 999px; font-size: 12.5px; font-weight: 550; background: var(--panel-2); color: var(--text-2); border: 1px solid var(--line); font-variant-numeric: tabular-nums; }
-.btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.done-title { margin: 0; font-weight: 600; font-size: 16px; }
+.done-file { margin: 3px 0 0; font-size: 13px; color: var(--text-2); word-break: break-all; }
+.done-checks { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.chip { padding: 2px 8px; border-radius: 6px; font-size: 13px; font-weight: 500; background: var(--panel-2); color: var(--text-2); border: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+.btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
 .btn-row .btn { flex: 1; min-width: 140px; }
 
 /* Error / notice */
 .notice { display: flex; gap: 12px; align-items: flex-start; }
 .notice-icon { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--danger-soft); color: var(--danger); }
-.notice-title { margin: 0; font-weight: 620; font-size: 16px; }
-.notice-body { margin: 4px 0 0; color: var(--text-2); font-size: 14.5px; }
-.notice-detail { margin: 12px 0 0; font-size: 12.5px; color: var(--text-3); }
+.notice-title { margin: 0; font-weight: 600; font-size: 16px; }
+.notice-body { margin: 4px 0 0; color: var(--text-2); font-size: 14px; }
+.notice-detail { margin: 12px 0 0; font-size: 13px; color: var(--text-3); }
 .notice-detail summary { cursor: pointer; }
 .notice-detail pre { margin: 8px 0 0; padding: 10px; border-radius: 8px; background: var(--panel-2); white-space: pre-wrap; word-break: break-word; font: 12px/1.5 ui-monospace, "SF Mono", Menlo, monospace; color: var(--text-2); }
 
@@ -307,28 +307,28 @@ button, input, select { font: inherit; color: inherit; }
 }
 .env-list { margin: 14px 0 0; padding: 0; list-style: none; font-size: 14px; }
 .env-list li { display: flex; justify-content: space-between; padding: 8px 0; border-top: 1px solid var(--line); }
-.env-list .ok { color: var(--ok); font-weight: 550; }
-.env-list .missing { color: var(--danger); font-weight: 550; }
+.env-list .ok { color: var(--ok); font-weight: 500; }
+.env-list .missing { color: var(--danger); font-weight: 500; }
 
 /* Recent */
-.section-title { margin: 30px 0 10px; font-size: 14px; font-weight: 620; color: var(--text-2); }
+.section-title { margin: 32px 0 8px; font-size: 14px; font-weight: 600; color: var(--text-2); }
 .recent { margin: 0; padding: 0; list-style: none; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; }
-.recent li { display: flex; align-items: center; gap: 12px; padding: 10px 8px 10px 14px; }
+.recent li { display: flex; align-items: center; gap: 12px; padding: 12px 8px 12px 16px; }
 .recent li + li { border-top: 1px solid var(--line); }
 .recent-kind { flex: none; color: var(--text-3); }
 .recent-main { flex: 1; min-width: 0; }
-.recent-title { margin: 0; font-size: 14.5px; font-weight: 550; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.recent-meta { margin: 1px 0 0; font-size: 12.5px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+.recent-title { margin: 0; font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.recent-meta { margin: 1px 0 0; font-size: 13px; color: var(--text-3); font-variant-numeric: tabular-nums; }
 .recent-meta span + span::before { content: ""; display: inline-block; width: 3px; height: 3px; margin: 0 7px 3px; border-radius: 50%; background: var(--text-3); vertical-align: middle; }
 .recent-actions { display: flex; flex: none; }
-.empty-recent { padding: 18px 14px; color: var(--text-3); font-size: 14px; text-align: center; }
+.empty-recent { padding: 20px 16px; color: var(--text-3); font-size: 14px; text-align: center; }
 
 /* Settings */
 .settings-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
-.settings-head h2 { margin: 0; font-size: 17px; font-weight: 650; }
+.settings-head h2 { margin: 0; font-size: 17px; font-weight: 600; }
 .setting { padding: 16px 0; border-top: 1px solid var(--line); }
 .setting:first-of-type { border-top: 0; }
-.setting-label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14.5px; }
+.setting-label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; }
 .setting-help { margin: 8px 0 0; font-size: 13px; color: var(--text-3); }
 .text-input {
   width: 100%; min-height: 40px; padding: 0 12px;
@@ -336,10 +336,10 @@ button, input, select { font: inherit; color: inherit; }
 }
 .text-input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); outline: none; }
 .setting-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-.version { font-size: 13.5px; color: var(--text-2); font-variant-numeric: tabular-nums; }
-.saved { font-size: 13px; color: var(--ok); font-weight: 550; }
+.version { font-size: 13px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.saved { font-size: 13px; color: var(--ok); font-weight: 500; }
 
-.app-footer { margin-top: 34px; text-align: center; font-size: 12.5px; color: var(--text-3); }
+.app-footer { margin-top: 32px; text-align: center; font-size: 13px; color: var(--text-3); }
 
 @media (max-width: 520px) {
   .app { padding-top: 18px; }
@@ -353,6 +353,134 @@ button, input, select { font: inherit; color: inherit; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+/* Brand mark + tabs */
+.mark { display: block; flex: none; background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAYAAACohjseAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAOKADAAQAAAABAAAAOAAAAAANV2hTAAAUrklEQVRoBY2aa4yd1XWG97nM1Zdie7AxvmSQoCAiDKqTAEKUCiJK3EQNdhGEEglSVVUqVKlNpUogtZHSH6hSa6n8AX5UlKCCogYSG4MEVCIVdpza2KBKdn3D2DgeD+PbeOyZM7dz+j7v2vuc4xik7PE537f3Xnut9a619trr+44r6bdorVarsmHDhlXz8/O/29fXt3ZqampJf29v/dLUVGpqfVWfnp4efTdTk4H5+TSrm2q1qj5jca+Z3IKOdSL6nPkggyc09d7eNKe2aNGisxo7pqGDr7zyykilUmkF5Rd/V754KqX169f/zvT09J/MN+cfEauvNFutq6BvtUDBFf6VVBEXCdOAuxr3JIPcZDro1YUo02klA6bLlNHP3918qtWKbFELWalytlar/U+tXn/l6quv/unbb7996bKFXZ0soWsk365bt+470zPTfz8/N3/T/PycrGztMpiqlA2QKCkIXQxC1bbymolZgBYy3XDfxqcbD7UwV9CL2HwzXaWCLzvrMGhNgHt6e/63r6//hx999NFrhXv39QqADz300MD+/fs3N6am/mJOwMJLKcliDsN6vS6QVX20lNUooK82IHQ1EizeYV/GWE/olmY+wURDYayWjKntAKOkqMmkjDXT7OxsmpmZ8XyoIKD1WhoYGNx81113/d0LL7wwW3hz7WigzuOPP96/e/fulxuNqU2zM7NWVGGgxQN5j7EkPBGK0RcTg4prN0tomGOsGApwfX29Djdm4Ndu2UH0mwI47w1Nr9CEuoBXHkiXLl10ZCEDw4nvj++++54/6wZZY3lpss7mRqPx+NycwOmvV4poYwtc3QoWJVG4AAwAGVbpZIYFYNsJ4knCQcGyn4I0/G/+YACPeBV5IavTB8zg4EDqVfIJb0YiE/2tIyOnesfGxt7NKqQ2wJtvvPmPp6cb/6ywrMBY2TItXLDQdIRM+DoseAXALsuzwFQZLODiFgVjFv7N5rzCXuEOdSywLN/noYq8HSDDADCKLSIbiEe93pMG+geScoWN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") center / contain no-repeat; }
+.app-header { gap: 12px; }
+.brand { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.brand .mark { width: 28px; height: 28px; }
+.tabs { display: inline-flex; padding: 3px; gap: 2px; border-radius: 10px; background: var(--panel-2); border: 1px solid var(--line); }
+.tabs button {
+  min-width: 92px; min-height: 30px; padding: 0 14px;
+  border: 0; border-radius: 7px; background: transparent;
+  color: var(--text-2); font-weight: 500; font-size: 14px; cursor: pointer;
+  transition: background .2s var(--ease), color .2s;
+}
+.tabs button[aria-selected="true"] { background: var(--panel); color: var(--text); box-shadow: var(--shadow-sm), 0 0 0 1px var(--line); }
+
+/* Convert */
+.drop {
+  display: grid; justify-items: center; gap: 6px;
+  padding: 24px 20px; border: 1.5px dashed var(--line-strong); border-radius: 12px;
+  background: var(--panel-2); text-align: center;
+  transition: border-color .15s, background .15s;
+}
+.drop.is-over { border-color: var(--accent); background: var(--accent-soft); }
+.drop-icon { display: grid; place-items: center; width: 40px; height: 40px; margin-bottom: 4px; border-radius: 50%; background: var(--panel); border: 1px solid var(--line); color: var(--text-2); }
+.drop-title { margin: 0; font-weight: 600; font-size: 16px; }
+.drop-sub { margin: 0 0 8px; font-size: 13px; color: var(--text-3); }
+.drop.compact { grid-template-columns: auto 1fr auto; justify-items: start; align-items: center; gap: 12px; padding: 12px 12px 12px 14px; text-align: left; }
+.drop.compact .drop-icon { width: 32px; height: 32px; margin: 0; }
+.drop.compact .drop-sub { display: none; }
+.drop.compact .drop-title { font-size: 14px; font-weight: 500; color: var(--text-2); }
+.convert-opts { margin-top: 20px; }
+
+.files { margin: 0; padding: 0; list-style: none; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; }
+.files li { display: flex; align-items: center; gap: 12px; padding: 12px 8px 12px 16px; }
+.files li + li { border-top: 1px solid var(--line); }
+.file-icon { flex: none; color: var(--text-3); }
+.file-icon.ok { color: var(--ok); }
+.file-icon.err { color: var(--danger); }
+.file-main { flex: 1; min-width: 0; }
+.file-name { margin: 0; font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.file-meta { margin: 1px 0 0; font-size: 13px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+.file-meta span + span::before { content: ""; display: inline-block; width: 3px; height: 3px; margin: 0 7px 3px; border-radius: 50%; background: var(--text-3); vertical-align: middle; }
+.file-meta.err { color: var(--danger); }
+.timeline.sm { height: 6px; margin: 8px 0 3px; border-radius: 3px; }
+.timeline.sm .timeline-fill { border-radius: 3px 0 0 3px; background: var(--render); }
+.timeline.sm .timeline-head { top: -4px; bottom: -4px; }
+.timeline.sm .timeline-head::before { top: -2px; left: -3px; width: 8px; height: 4px; }
+
+/* Settings: switch, token, phone */
+.switch {
+  position: relative; flex: none; width: 46px; height: 28px; padding: 0;
+  border: 0; border-radius: 999px; background: var(--line-strong); cursor: pointer;
+  transition: background .2s var(--ease);
+}
+.switch::after {
+  content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px;
+  border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
+  transition: transform .25s var(--ease);
+}
+.switch[aria-checked="true"] { background: var(--accent); }
+.switch[aria-checked="true"]::after { transform: translateX(18px); }
+.code-row.tight { margin-top: 0; }
+.phone-pair {
+  display: flex; gap: 20px; align-items: center; margin-top: 12px; padding: 16px;
+  border-radius: 12px; background: var(--panel-2); border: 1px solid var(--line);
+}
+.qr-box { flex: none; width: 128px; height: 128px; padding: 9px; border-radius: 10px; background: #fff; color: #111; }
+.qr-box svg { display: block; width: 100%; height: 100%; shape-rendering: crispEdges; }
+.pair-facts { margin: 0; min-width: 0; }
+.pair-facts dt { font-size: 13px; color: var(--text-3); }
+.pair-facts dd { margin: 1px 0 10px; font-weight: 600; word-break: break-all; }
+.pair-facts dd:last-child { margin-bottom: 0; }
+.pin-code { font: 600 24px/1.2 ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: .06em; font-variant-numeric: tabular-nums; }
+.warn { display: flex; gap: 8px; align-items: flex-start; margin: 12px 0 0; font-size: 13px; color: var(--text-2); }
+.warn .icon { width: 16px; height: 16px; margin-top: 1px; color: var(--render); }
+
+/* Phone (PIN gate, save button) */
+.pin-head { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; margin-bottom: 20px; }
+.pin-head .mark { width: 44px; height: 44px; }
+.pin-head h2 { margin: 4px 0 0; font-size: 18px; font-weight: 600; }
+.pin-input {
+  width: 100%; height: 60px; margin-bottom: 12px;
+  border: 1px solid var(--line-strong); border-radius: 12px; background: var(--panel);
+  text-align: center; font: 600 28px ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: .35em; font-variant-numeric: tabular-nums;
+}
+.pin-input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); outline: none; }
+.pin-input[aria-invalid="true"] { border-color: var(--danger); }
+.pin-error { margin: 0 0 12px; font-size: 13px; color: var(--danger); text-align: center; }
+.only-phone { display: none !important; }
+.is-phone .only-phone { display: flex !important; }
+.is-phone .only-mac { display: none !important; }
+
+/* Chrome extension popup */
+.popup { width: 340px; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); box-shadow: var(--shadow); font-size: 14px; }
+.pop-head { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-weight: 600; font-size: 13px; }
+.pop-head .mark { width: 20px; height: 20px; }
+.pop-head .btn-icon { width: 30px; min-height: 30px; margin-left: auto; }
+.pop-head .btn-icon .icon { width: 16px; height: 16px; }
+.pop-page { padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); }
+.pop-title { margin: 0; font-weight: 600; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.pop-host { margin: 2px 0 0; font-size: 13px; color: var(--text-3); }
+.pop-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+.pop-note { margin: 10px 0 0; font-size: 13px; color: var(--text-3); }
+.pop-status { margin-top: 12px; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); }
+.pop-status .prog-head { margin-bottom: 8px; }
+.pop-status .prog-pct { font-size: 18px; }
+.pop-status .notice-icon, .pop-status .badge-ok { width: 28px; height: 28px; }
+.pop-status .notice-icon .icon, .pop-status .badge-ok .icon { width: 16px; height: 16px; }
+.pop-status .notice-title, .pop-status .done-title { font-size: 14px; }
+.pop-status .notice-body { font-size: 13px; margin-top: 2px; }
+.pop-status .done-file { font-size: 13px; }
+.pop-status .link-btn { margin-top: 6px; padding-left: 0; font-size: 13px; }
+
+/* Touch screens: 44 px targets */
+@media (pointer: coarse) {
+  .btn-icon { width: 44px; min-height: 44px; }
+  .segmented button, .tabs button { min-height: 40px; }
+  .btn { min-height: 44px; }
+}
+
+@media (max-width: 520px) {
+  .app-header { flex-wrap: wrap; }
+  .tabs { order: 3; display: flex; width: 100%; }
+  .tabs button { flex: 1; }
+  .phone-pair { flex-direction: column; align-items: flex-start; }
+  .drop.compact { grid-template-columns: auto 1fr; }
+  .drop.compact .btn { grid-column: 1 / -1; width: 100%; }
 }
 
 /* ===== Preview-only chrome ===== */
@@ -369,22 +497,45 @@ button, input, select { font: inherit; color: inherit; }
 }
 .pv-bar button[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
 .pv-bar .pv-theme { margin-left: auto; }
+.pv-group { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding-right: 10px; margin-right: 4px; border-right: 1px solid var(--line); }
+.pv-group:last-of-type { border-right: 0; }
+.pv-gallery { max-width: 1260px; margin: 0 auto; padding: 28px 16px 48px; }
+.pv-gallery h2 { margin: 0 0 4px; font-size: 17px; font-weight: 650; }
+.pv-gallery > p { margin: 0 0 22px; font-size: 13.5px; color: var(--text-3); max-width: 70ch; }
+.pv-grid { display: flex; flex-wrap: wrap; gap: 28px 24px; align-items: flex-start; }
+.pv-grid figure { margin: 0; }
+.pv-grid figcaption { margin-bottom: 8px; font-size: 12.5px; font-weight: 550; color: var(--text-3); }
+.pv-phone { display: block; width: 390px; height: 780px; border: 1px solid var(--line-strong); border-radius: 28px; background: var(--bg); }
+.is-phone .pv-bar, .is-phone #tabs, .is-phone #open-settings { display: none !important; }
 </style>
 </head>
 <body>
 
 <div class="pv-bar" role="toolbar" aria-label="Preview states">
-  <strong>Preview</strong>
-  <button data-go="empty">Empty</button>
-  <button data-go="fetching">Fetching</button>
-  <button data-go="video">Video ready</button>
-  <button data-go="audio">Audio ready</button>
-  <button data-go="downloading">Downloading</button>
-  <button data-go="converting">Converting</button>
-  <button data-go="done">Done</button>
-  <button data-go="error">Error (Instagram)</button>
-  <button data-go="missing">Missing ffmpeg</button>
-  <button data-go="settings">Settings</button>
+  <div class="pv-group">
+    <strong>Download</strong>
+    <button data-go="empty">Empty</button>
+    <button data-go="fetching">Fetching</button>
+    <button data-go="video">Video ready</button>
+    <button data-go="audio">Audio ready</button>
+    <button data-go="downloading">Downloading</button>
+    <button data-go="converting">Re-encoding</button>
+    <button data-go="done">Done</button>
+    <button data-go="error">Error</button>
+  </div>
+  <div class="pv-group">
+    <strong>Convert</strong>
+    <button data-go="c-empty">Empty</button>
+    <button data-go="c-processing">Processing</button>
+    <button data-go="c-done">Done</button>
+    <button data-go="c-error">Error</button>
+  </div>
+  <div class="pv-group">
+    <strong>Other</strong>
+    <button data-go="settings">Settings</button>
+    <button data-go="ext">Extension popup</button>
+    <button data-go="phone">Phone</button>
+  </div>
   <button class="pv-theme" id="pv-theme">Theme: auto</button>
 </div>
 
@@ -400,15 +551,40 @@ button, input, select { font: inherit; color: inherit; }
   <symbol id="i-wave" viewBox="0 0 24 24"><path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 11v2"/></symbol>
   <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></symbol>
   <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v11"/><path d="m7 10.5 5 5 5-5"/><path d="M5 20h14"/></symbol>
+  <symbol id="i-file-in" viewBox="0 0 24 24"><path d="M12 3v10"/><path d="m8 9.5 4 4 4-4"/><path d="M4 15v3.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V15"/></symbol>
 </svg>
 
 <main class="app" id="app">
   <header class="app-header">
-    <h1 class="app-title">Video Downloader</h1>
+    <div class="brand">
+      <span class="mark" aria-hidden="true"></span>
+      <h1 class="app-title">Video Downloader</h1>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Mode" id="tabs">
+      <button type="button" role="tab" id="tab-download" aria-selected="true" aria-controls="v-main">Download</button>
+      <button type="button" role="tab" id="tab-convert" aria-selected="false" aria-controls="v-convert" tabindex="-1">Convert</button>
+    </div>
     <button class="btn btn-quiet btn-icon" id="open-settings" aria-label="Settings" title="Settings">
       <svg class="icon"><use href="#i-gear"/></svg>
     </button>
   </header>
+
+  <!-- Phone: PIN gate -->
+  <section class="panel" id="v-pin" hidden aria-labelledby="pin-title">
+    <div class="pin-head">
+      <span class="mark" aria-hidden="true"></span>
+      <h2 id="pin-title">Enter the PIN from your Mac</h2>
+      <p class="notice-body" style="margin:0">On your Mac, open Video Downloader › Settings. The PIN is under “Use from my phone”.</p>
+    </div>
+    <form id="pin-form" autocomplete="off">
+      <label class="sr-only" for="pin">6-digit PIN</label>
+      <input class="pin-input" id="pin" inputmode="numeric" autocomplete="one-time-code" maxlength="7" placeholder="••••••" aria-describedby="pin-error">
+      <p class="pin-error" id="pin-error" role="alert" hidden>That PIN didn’t match. Check the number on your Mac.</p>
+      <button class="btn btn-primary btn-lg btn-block">Continue</button>
+    </form>
+  </section>
 
   <!-- Environment check -->
   <section class="panel" id="v-env" hidden aria-labelledby="env-title">
@@ -432,7 +608,7 @@ button, input, select { font: inherit; color: inherit; }
   </section>
 
   <!-- Main flow -->
-  <div class="stack" id="v-main">
+  <div class="stack" id="v-main" role="tabpanel" aria-labelledby="tab-download">
     <form class="field-wrap" id="url-form" autocomplete="off">
       <label for="url" class="sr-only">Video link</label>
       <svg class="icon field-icon"><use href="#i-link"/></svg>
@@ -536,9 +712,12 @@ button, input, select { font: inherit; color: inherit; }
             </div>
           </div>
         </div>
-        <div class="btn-row">
+        <div class="btn-row only-mac">
           <button class="btn btn-primary btn-lg"><svg class="icon"><use href="#i-folder"/></svg>Show in Finder</button>
           <button class="btn btn-lg"><svg class="icon"><use href="#i-play"/></svg>Open</button>
+        </div>
+        <div class="btn-row only-phone">
+          <button class="btn btn-primary btn-lg"><svg class="icon"><use href="#i-down"/></svg>Save to this device</button>
         </div>
       </div>
     </section>
@@ -558,8 +737,43 @@ button, input, select { font: inherit; color: inherit; }
       </div>
       <div class="btn-row">
         <button class="btn btn-primary btn-lg" id="retry">Retry</button>
-        <button class="btn btn-lg" id="err-settings">Open Settings</button>
+        <button class="btn btn-lg only-mac" id="err-settings">Open Settings</button>
       </div>
+    </section>
+  </div>
+
+  <!-- Convert -->
+  <div class="stack" id="v-convert" hidden role="tabpanel" aria-labelledby="tab-convert">
+    <section class="panel" aria-label="Convert to audio">
+      <div class="drop" id="drop">
+        <div class="drop-icon"><svg class="icon"><use href="#i-file-in"/></svg></div>
+        <p class="drop-title" id="drop-title">Drop video or audio files here</p>
+        <p class="drop-sub">They start converting as soon as you add them</p>
+        <button class="btn" id="choose">Choose files…</button>
+      </div>
+      <div class="convert-opts">
+        <div class="opt-row">
+          <span class="opt-label" id="lbl-cfmt">Convert to</span>
+          <div class="segmented" role="radiogroup" aria-labelledby="lbl-cfmt" id="cfmt">
+            <button type="button" role="radio" aria-checked="true" data-cf="mp3">MP3</button>
+            <button type="button" role="radio" aria-checked="false" data-cf="m4a">M4A</button>
+            <button type="button" role="radio" aria-checked="false" data-cf="wav">WAV</button>
+          </div>
+        </div>
+        <div class="opt-row" id="row-cq">
+          <span class="opt-label" id="lbl-cq">Quality</span>
+          <div class="segmented" role="radiogroup" aria-labelledby="lbl-cq" id="cq">
+            <button type="button" role="radio" aria-checked="true" data-q="192">Standard</button>
+            <button type="button" role="radio" aria-checked="false" data-q="320">High</button>
+          </div>
+        </div>
+        <p class="opt-note" id="c-note">192 kbps. Saved next to each original with the same name. Existing files are never replaced.</p>
+      </div>
+    </section>
+    <section id="v-files" hidden aria-labelledby="files-title">
+      <h2 class="section-title" id="files-title">Files</h2>
+      <ul class="files" id="files"></ul>
+      <p class="sr-only" id="files-status" aria-live="polite"></p>
     </section>
   </div>
 
@@ -595,6 +809,33 @@ button, input, select { font: inherit; color: inherit; }
       </div>
       <p class="setting-help" id="update-status" aria-live="polite">Update when a site that used to work stops working</p>
     </div>
+    <div class="setting">
+      <span class="setting-label" id="lbl-token">Connect Chrome extension</span>
+      <div class="code-row tight">
+        <code class="code" id="token" aria-labelledby="lbl-token">q7Rk2mX9pT4vL8wZ3nB6yH1cF5jD0sAe</code>
+        <button class="btn" id="copy-token"><svg class="icon"><use href="#i-copy"/></svg><span>Copy</span></button>
+      </div>
+      <p class="setting-help">Paste this once in the extension’s Options. Without it, Chrome can’t send links to the app.</p>
+    </div>
+    <div class="setting">
+      <div class="setting-row">
+        <span class="setting-label" style="margin:0" id="lbl-phone">Use from my phone (same Wi-Fi)</span>
+        <button class="switch" role="switch" aria-checked="false" aria-labelledby="lbl-phone" id="phone-switch"></button>
+      </div>
+      <p class="setting-help" id="phone-off-help">Open the app in your phone’s browser. Downloads still run on this Mac.</p>
+      <div id="phone-on" hidden>
+        <div class="phone-pair">
+          <div class="qr-box"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25" class="qr" role="img" aria-label="QR code for http://192.168.1.24:8765"><path class="qrline" stroke="currentColor" d="M0 0.5h7m1 0h1m2 0h1m1 0h1m2 0h1m1 0h7m-25 1h1m5 0h1m1 0h2m2 0h1m1 0h1m3 0h1m5 0h1m-25 1h1m1 0h3m1 0h1m1 0h4m1 0h1m4 0h1m1 0h3m1 0h1m-25 1h1m1 0h3m1 0h1m3 0h7m1 0h1m1 0h3m1 0h1m-25 1h1m1 0h3m1 0h1m1 0h1m1 0h2m6 0h1m1 0h3m1 0h1m-25 1h1m5 0h1m2 0h2m3 0h1m3 0h1m5 0h1m-25 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-16 1h1m1 0h4m-15 1h1m2 0h10m2 0h1m1 0h1m2 0h1m1 0h3m-25 1h1m2 0h3m3 0h2m1 0h2m1 0h3m2 0h4m-23 1h2m3 0h1m3 0h1m1 0h4m1 0h5m2 0h1m-24 1h4m2 0h6m2 0h1m1 0h1m2 0h5m-25 1h2m1 0h1m2 0h2m1 0h1m1 0h2m1 0h1m1 0h3m5 0h1m-25 1h1m1 0h1m2 0h1m2 0h3m4 0h1m3 0h2m2 0h1m-24 1h3m2 0h3m2 0h4m1 0h3m3 0h4m-25 1h1m1 0h3m2 0h2m1 0h2m2 0h1m1 0h1m3 0h1m1 0h1m1 0h1m-25 1h1m1 0h1m1 0h1m1 0h3m3 0h3m1 0h5m1 0h2m-16 1h1m1 0h3m1 0h3m3 0h1m2 0h1m-24 1h7m1 0h1m2 0h2m3 0h1m1 0h1m1 0h2m2 0h1m-25 1h1m5 0h1m1 0h3m1 0h2m2 0h1m3 0h1m3 0h1m-25 1h1m1 0h3m1 0h1m1 0h1m3 0h1m2 0h7m-22 1h1m1 0h3m1 0h1m1 0h2m2 0h1m5 0h2m1 0h1m1 0h2m-25 1h1m1 0h3m1 0h1m3 0h2m1 0h1m6 0h1m1 0h3m-25 1h1m5 0h1m4 0h1m3 0h1m1 0h4m1 0h3m-25 1h7m1 0h2m1 0h1m2 0h3m1 0h1m2 0h1m2 0h1"/></svg></div>
+          <dl class="pair-facts">
+            <dt>Scan, or open on your phone</dt>
+            <dd>http://192.168.1.24:8765</dd>
+            <dt>PIN</dt>
+            <dd class="pin-code">482 913</dd>
+          </dl>
+        </div>
+        <p class="warn"><svg class="icon"><use href="#i-alert"/></svg><span>Anyone on this Wi-Fi who has the PIN can use the app. It turns off when you quit.</span></p>
+      </div>
+    </div>
     <p class="saved" id="saved" aria-live="polite"></p>
   </section>
 
@@ -606,6 +847,24 @@ button, input, select { font: inherit; color: inherit; }
 
   <footer class="app-footer">Only download content you have the right to save.</footer>
 </main>
+
+<!-- Preview: Chrome extension popup, 340 px -->
+<section class="pv-gallery" id="pv-ext" hidden>
+  <h2>Chrome extension popup</h2>
+  <p>340 px wide. Video and Audio use the app’s saved defaults. The popup talks only to http://127.0.0.1 on the port set in Options (8765 by default).</p>
+  <div class="pv-grid" id="ext-grid"></div>
+</section>
+
+<!-- Preview: phone, 390 px -->
+<section class="pv-gallery" id="pv-phone" hidden>
+  <h2>Phone, 390 px</h2>
+  <p>The same page served on the Mac’s Wi-Fi address. Every request needs the PIN. No Settings or Convert on the phone; finished files get “Save to this device”.</p>
+  <div class="pv-grid">
+    <figure><figcaption>PIN</figcaption><iframe class="pv-phone" title="Phone: PIN" data-phone="phone-pin"></iframe></figure>
+    <figure><figcaption>Link pasted</figcaption><iframe class="pv-phone" title="Phone: ready" data-phone="phone-video"></iframe></figure>
+    <figure><figcaption>Done</figcaption><iframe class="pv-phone" title="Phone: done" data-phone="phone-done"></iframe></figure>
+  </div>
+</section>
 
 <script>
 (() => {
@@ -637,9 +896,12 @@ button, input, select { font: inherit; color: inherit; }
           <p class="recent-title">${r.title}</p>
           <p class="recent-meta">${r.meta.map((m) => `<span>${m}</span>`).join('')}<span>${r.when}</span></p>
         </div>
-        <div class="recent-actions">
+        <div class="recent-actions only-mac">
           <button class="btn btn-quiet btn-icon" aria-label="Show ${r.title} in Finder" title="Show in Finder"><svg class="icon"><use href="#i-folder"/></svg></button>
           <button class="btn btn-quiet btn-icon" aria-label="Open ${r.title}" title="Open"><svg class="icon"><use href="#i-play"/></svg></button>
+        </div>
+        <div class="recent-actions only-phone">
+          <button class="btn btn-quiet btn-icon" aria-label="Save ${r.title} to this device" title="Save to this device"><svg class="icon"><use href="#i-down"/></svg></button>
         </div>
       </li>`).join('');
   }
@@ -683,18 +945,41 @@ button, input, select { font: inherit; color: inherit; }
 
   function stop() { clearInterval(timer); timer = null; }
 
+  const DL_STATES = ['empty', 'fetching', 'video', 'audio', 'downloading', 'converting', 'done', 'error'];
+  const show = (id, on) => { $(id).hidden = !on; };
+
+  function setTab(which) {
+    ['download', 'convert'].forEach((t) => {
+      const b = $('tab-' + t);
+      b.setAttribute('aria-selected', t === which);
+      b.tabIndex = t === which ? 0 : -1;
+    });
+  }
+
   function go(next) {
     stop();
     state = next;
     document.querySelectorAll('[data-go]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.go === next));
 
-    const show = (id, on) => { $(id).hidden = !on; };
-    const inFlow = !['missing', 'settings'].includes(next);
+    const gallery = next === 'ext' || next === 'phone';
+    show('app', !gallery);
+    show('pv-ext', next === 'ext');
+    show('pv-phone', next === 'phone');
+    if (next === 'phone') loadPhones();
+    if (gallery) return;
+
+    const inFlow = DL_STATES.includes(next);
+    const isConvert = next.startsWith('c-');
+    show('v-pin', next === 'pin');
     show('v-env', next === 'missing');
     show('v-settings', next === 'settings');
     show('v-main', inFlow);
     show('v-recent', inFlow);
-    show('open-settings', next !== 'settings');
+    show('v-convert', isConvert);
+    show('tabs', inFlow || isConvert);
+    setTab(isConvert ? 'convert' : 'download');
+    if (isConvert) { renderConvert(next); return; }
+    show('open-settings', next !== 'settings' && next !== 'pin');
     show('v-skeleton', next === 'fetching');
     show('v-card', ['video', 'audio', 'downloading', 'converting', 'done'].includes(next));
     show('v-options', next === 'video' || next === 'audio');
@@ -749,6 +1034,180 @@ button, input, select { font: inherit; color: inherit; }
       setBar(next);
       if (next >= 100) { stop(); setTimeout(() => go('done'), 350); }
     }, 300);
+  }
+
+  // ---- Convert tab ----
+  let cfmt = 'mp3';
+  let cq = '192';
+  let files = [];
+  const SOURCES = [
+    { name: 'Interview_A_cam.mov', size: '2.4 GB', kind: 'film', outSize: '38.1 MB' },
+    { name: 'Broll_drone_04.mp4', size: '812 MB', kind: 'film', outSize: '4.6 MB' },
+    { name: 'VO_take3.wav', size: '61 MB', kind: 'wave', outSize: '5.2 MB', clash: true },
+  ];
+  const NO_AUDIO = { name: 'Screen Recording 2026-11-20.mov', size: '348 MB', kind: 'film', status: 'error' };
+
+  function convertNote() {
+    const fmt = cfmt === 'mp3' ? `${cq} kbps MP3.` : cfmt === 'm4a' ? 'AAC in M4A.' : 'Uncompressed WAV.';
+    $('c-note').textContent = `${fmt} Saved next to each original with the same name. Existing files are never replaced.`;
+    show('row-cq', cfmt === 'mp3');
+  }
+
+  function fileRow(f, i) {
+    const base = f.name.replace(/\.[^.]+$/, '');
+    const out = `${base}${f.clash ? ' (1)' : ''}.${cfmt}`;
+    const btn = (icon, label, title, attr) => `<button class="btn btn-quiet btn-icon" ${attr} aria-label="${label}" title="${title}"><svg class="icon"><use href="#i-${icon}"/></svg></button>`;
+    let icon = f.kind, cls = '', name = f.name, meta, extra = '', act = '';
+    if (f.status === 'converting') {
+      const p = Math.round(f.pct);
+      meta = `<p class="file-meta"><span>${f.size}</span><span>Converting ${p}%</span></p>`;
+      extra = `<div class="timeline sm" role="progressbar" aria-label="Converting ${f.name}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${p}"><div class="timeline-fill" style="width:${f.pct}%"></div><div class="timeline-head" style="left:${f.pct}%"></div></div>`;
+      act = btn('x', `Cancel ${f.name}`, 'Cancel', `data-cancel="${i}"`);
+    } else if (f.status === 'waiting') {
+      meta = `<p class="file-meta"><span>${f.size}</span><span>Waiting</span></p>`;
+      act = btn('x', `Cancel ${f.name}`, 'Cancel', `data-cancel="${i}"`);
+    } else if (f.status === 'canceled') {
+      meta = `<p class="file-meta"><span>Canceled. Nothing was saved.</span></p>`;
+    } else if (f.status === 'done') {
+      icon = 'check'; cls = 'ok'; name = out;
+      meta = `<p class="file-meta"><span>From ${f.name}</span><span>${f.outSize}</span>${f.clash ? `<span>${base}.${cfmt} already existed</span>` : ''}</p>`;
+      act = btn('folder', `Show ${out} in Finder`, 'Show in Finder', '');
+    } else {
+      icon = 'alert'; cls = 'err';
+      meta = `<p class="file-meta err">This file has no audio track, so there’s nothing to convert.</p>`;
+    }
+    return `<li><svg class="icon file-icon ${cls}" aria-hidden="true"><use href="#i-${icon}"/></svg>
+      <div class="file-main"><p class="file-name">${name}</p>${meta}${extra}</div>${act}</li>`;
+  }
+
+  function renderFiles() { $('files').innerHTML = files.map(fileRow).join(''); }
+
+  function renderConvert(next) {
+    const empty = next === 'c-empty';
+    $('drop').classList.toggle('compact', !empty);
+    $('drop-title').textContent = empty ? 'Drop video or audio files here' : 'Drop more files';
+    show('v-files', !empty);
+    convertNote();
+    if (next === 'c-processing') {
+      files = SOURCES.map((s, i) => ({ ...s, status: i === 0 ? 'converting' : 'waiting', pct: i === 0 ? 18 : 0 }));
+      timer = setInterval(() => {
+        const cur = files.find((f) => f.status === 'converting');
+        if (!cur) { stop(); return; }
+        cur.pct = Math.min(100, cur.pct + 3 + Math.random() * 6);
+        if (cur.pct >= 100) {
+          cur.status = 'done';
+          $('files-status').textContent = `${cur.name} converted`;
+          const nxt = files.find((f) => f.status === 'waiting');
+          if (nxt) { nxt.status = 'converting'; nxt.pct = 0; }
+        }
+        renderFiles();
+      }, 300);
+    } else if (next === 'c-done') {
+      files = SOURCES.map((s) => ({ ...s, status: 'done' }));
+    } else if (next === 'c-error') {
+      files = [{ ...SOURCES[0], status: 'done' }, NO_AUDIO, { ...SOURCES[1], status: 'done' }];
+    } else {
+      files = [];
+    }
+    renderFiles();
+  }
+
+  $('files').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-cancel]'); if (!b) return;
+    const f = files[+b.dataset.cancel];
+    const wasActive = f.status === 'converting';
+    f.status = 'canceled';
+    if (wasActive) { const nxt = files.find((x) => x.status === 'waiting'); if (nxt) { nxt.status = 'converting'; nxt.pct = 0; } }
+    renderFiles();
+  });
+  $('choose').addEventListener('click', () => go('c-processing'));
+  const drop = $('drop');
+  drop.addEventListener('dragover', (e) => { e.preventDefault(); drop.classList.add('is-over'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('is-over'));
+  drop.addEventListener('drop', (e) => { e.preventDefault(); drop.classList.remove('is-over'); go('c-processing'); });
+  $('cfmt').addEventListener('click', (e) => { const b = e.target.closest('[data-cf]'); if (!b) return; cfmt = b.dataset.cf; setRadio($('cfmt'), 'cf', cfmt); convertNote(); renderFiles(); });
+  $('cq').addEventListener('click', (e) => { const b = e.target.closest('[data-q]'); if (!b) return; cq = b.dataset.q; setRadio($('cq'), 'q', cq); convertNote(); });
+  setRadio($('cfmt'), 'cf', cfmt);
+  setRadio($('cq'), 'q', cq);
+
+  // ---- Tabs ----
+  $('tab-download').addEventListener('click', () => go('empty'));
+  $('tab-convert').addEventListener('click', () => go('c-empty'));
+  $('tabs').addEventListener('keydown', (e) => {
+    if (!['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+    const other = document.activeElement === $('tab-download') ? $('tab-convert') : $('tab-download');
+    other.focus(); other.click(); e.preventDefault();
+  });
+
+  // ---- Settings: extension token, phone ----
+  $('copy-token').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText($('token').textContent); } catch (_) {}
+    $('copy-token').querySelector('span').textContent = 'Copied';
+    setTimeout(() => { $('copy-token').querySelector('span').textContent = 'Copy'; }, 1500);
+  });
+  $('phone-switch').addEventListener('click', () => {
+    const on = $('phone-switch').getAttribute('aria-checked') !== 'true';
+    $('phone-switch').setAttribute('aria-checked', on);
+    show('phone-on', on);
+    show('phone-off-help', !on);
+  });
+
+  // ---- Phone (PIN) ----
+  $('pin-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const ok = $('pin').value.replace(/\D/g, '') === '482913';
+    $('pin').setAttribute('aria-invalid', !ok);
+    show('pin-error', !ok);
+    if (ok) go('empty');
+  });
+
+  // ---- Extension popup gallery ----
+  const PAGE = { title: 'Me at the zoo - YouTube', host: 'www.youtube.com' };
+  function popup(o) {
+    const page = o.page || PAGE;
+    const dis = o.disabled ? ' disabled' : '';
+    return `<figure><figcaption>${o.cap}</figcaption><div class="popup">
+      <div class="pop-head"><span class="mark" aria-hidden="true"></span>Video Downloader
+        <button class="btn btn-quiet btn-icon" aria-label="Options" title="Options"><svg class="icon"><use href="#i-gear"/></svg></button></div>
+      <div class="pop-page"><p class="pop-title">${page.title}</p><p class="pop-host">${page.host}</p></div>
+      ${o.noActions ? '' : `<div class="pop-actions">
+        <button class="btn btn-primary"${dis}><svg class="icon"><use href="#i-film"/></svg>${o.videoLabel || 'Video'}</button>
+        <button class="btn"${dis}><svg class="icon"><use href="#i-wave"/></svg>Audio</button></div>`}
+      ${o.status ? `<div class="pop-status" role="status">${o.status}</div>` : ''}
+      ${o.note ? `<p class="pop-note">${o.note}</p>` : ''}
+    </div></figure>`;
+  }
+  const notice = (title, body, extra = '') => `<div class="notice"><div class="notice-icon"><svg class="icon"><use href="#i-alert"/></svg></div>
+    <div>${title ? `<p class="notice-title">${title}</p>` : ''}<p class="notice-body"${title ? '' : ' style="margin:3px 0 0"'}>${body}</p>${extra}</div></div>`;
+  $('ext-grid').innerHTML = [
+    popup({ cap: 'Ready', note: 'Video: best up to 1080p, MP4. Audio: MP3. Change these in the app.' }),
+    popup({ cap: 'Sending', disabled: true, videoLabel: 'Sending…', note: 'Sending to Video Downloader…' }),
+    popup({ cap: 'Downloading', noActions: true,
+      status: `<div class="prog-head"><span class="prog-label">Downloading</span><span class="prog-pct">42%</span></div>
+        <div class="timeline" role="progressbar" aria-label="Downloading" aria-valuemin="0" aria-valuemax="100" aria-valuenow="42"><div class="timeline-fill" style="width:42%"></div><div class="timeline-head" style="left:42%"></div></div>`,
+      note: 'You can close this. The download keeps going in the app.' }),
+    popup({ cap: 'Done',
+      status: `<div class="done-head"><div class="badge-ok"><svg class="icon"><use href="#i-check"/></svg></div><div>
+        <p class="done-title">Saved to Downloads › Video Downloader</p><p class="done-file">Me at the zoo [jNQXAC9IVRw].mp4</p>
+        <button class="link-btn">Open app</button></div></div>` }),
+    popup({ cap: 'App not running', status: notice('', 'Video Downloader isn’t running. Open it, then try again.') }),
+    popup({ cap: 'Unsupported page', disabled: true, page: { title: 'Extensions', host: 'chrome://extensions' },
+      status: notice('Nothing to download here', 'Open a page with a video, then click the icon again.') }),
+    popup({ cap: 'Not connected yet (first run)', disabled: true,
+      status: notice('Connect to the app first', 'In Video Downloader, open Settings and copy the token under “Connect Chrome extension”. Paste it in Options.', '<button class="link-btn">Open Options</button>') }),
+  ].join('');
+
+  // ---- Phone frames ----
+  function currentTheme() {
+    const t = document.documentElement.getAttribute('data-theme');
+    if (t) return t;
+    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function loadPhones() {
+    const base = location.pathname.split('/').pop() || 'preview.html';
+    document.querySelectorAll('[data-phone]').forEach((f) => {
+      f.src = `${base}?n=${Date.now()}#v=${f.dataset.phone}&t=${currentTheme()}`;
+    });
   }
 
   // Controls
@@ -814,10 +1273,21 @@ button, input, select { font: inherit; color: inherit; }
     if (t === 'auto') document.documentElement.removeAttribute('data-theme');
     else document.documentElement.setAttribute('data-theme', t);
     $('pv-theme').textContent = 'Theme: ' + t;
+    if (state === 'phone') loadPhones();
   });
 
   applyMode();
-  go('empty');
+  // Phone frames load this page with #v=phone-…&t=light|dark
+  const hp = new URLSearchParams(location.hash.slice(1));
+  const pv = hp.get('v') || '';
+  if (pv.startsWith('phone')) {
+    document.body.classList.add('is-phone');
+    document.querySelector('#v-done .done-title').textContent = 'Finished on your Mac';
+    document.documentElement.setAttribute('data-theme', hp.get('t') === 'dark' ? 'dark' : 'light');
+    go({ 'phone-pin': 'pin', 'phone-video': 'video', 'phone-done': 'done' }[pv] || 'empty');
+  } else {
+    go('empty');
+  }
 })();
 </script>
 </body>

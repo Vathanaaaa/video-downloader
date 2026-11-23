@@ -1,0 +1,80 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15          # Apple silicon
+            arch: arm64
+          - runner: macos-15-intel    # Intel
+            arch: x86_64
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python packages
+        run: |
+          python -m venv .venv
+          .venv/bin/python -m pip install --upgrade pip
+          .venv/bin/python -m pip install -r packaging/requirements.txt
+
+      - name: Download pinned binaries
+        run: packaging/fetch-binaries.sh ${{ matrix.arch }}
+
+      - name: Build app and DMG
+        run: packaging/build.sh
+
+      - name: Check the app runs without PATH
+        run: |
+          APP="dist/${{ matrix.arch }}/Video Downloader.app/Contents"
+          for b in ffmpeg ffprobe; do env -i "$APP/Frameworks/bin/$b" -version | head -1; done
+          env -i "$APP/Frameworks/bin/yt-dlp" --version
+          env -i "$APP/Frameworks/bin/deno" --version | head -1
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dmg-${{ matrix.arch }}
+          path: dist/*.dmg
+          if-no-files-found: error
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: out
+          merge-multiple: true
+
+      - name: Download the matching FFmpeg source (GPL)
+        run: |
+          source packaging/binaries.env
+          curl -fL -o "out/ffmpeg-$FFMPEG_VERSION.tar.xz" "$FFMPEG_SRC_URL"
+          echo "$FFMPEG_SRC_SHA256  out/ffmpeg-$FFMPEG_VERSION.tar.xz" | sha256sum -c
+
+      - name: Checksums
+        run: cd out && sha256sum * > SHA256SUMS.txt
+
+      - name: Create draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" out/* --draft --title "$GITHUB_REF_NAME" \
+            --notes "Video Downloader $GITHUB_REF_NAME. Download the arm64 DMG for Apple silicon or the x86_64 DMG for Intel. The FFmpeg source archive is attached for the GPL."

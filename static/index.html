@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Video Downloader</title>
 <link rel="stylesheet" href="/static/style.css">
+<link rel="icon" type="image/png" sizes="32x32" href="/static/icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/static/icons/favicon-16.png">
+<link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#f0f0f3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#18181b" media="(prefers-color-scheme: dark)">
 </head>
 <body>
 
@@ -19,42 +25,70 @@
   <symbol id="i-film" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 5v14M17 5v14M3 9.5h4M3 14.5h4M17 9.5h4M17 14.5h4"/></symbol>
   <symbol id="i-wave" viewBox="0 0 24 24"><path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 11v2"/></symbol>
   <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v11"/><path d="m7 10.5 5 5 5-5"/><path d="M5 20h14"/></symbol>
+  <symbol id="i-file-in" viewBox="0 0 24 24"><path d="M12 3v10"/><path d="m8 9.5 4 4 4-4"/><path d="M4 15v3.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V15"/></symbol>
 </svg>
 
 <main class="app" id="app">
   <header class="app-header">
-    <h1 class="app-title">Video Downloader</h1>
-    <button class="btn btn-quiet btn-icon" id="open-settings" aria-label="Settings" title="Settings">
+    <div class="brand">
+      <span class="mark" aria-hidden="true"></span>
+      <h1 class="app-title">Video Downloader</h1>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Mode" id="tabs" hidden>
+      <button type="button" role="tab" id="tab-download" aria-selected="true" aria-controls="v-main">Download</button>
+      <button type="button" role="tab" id="tab-convert" aria-selected="false" aria-controls="v-convert" tabindex="-1">Convert</button>
+    </div>
+    <button class="btn btn-quiet btn-icon" id="open-settings" aria-label="Settings" title="Settings  ⌘," hidden>
       <svg class="icon"><use href="#i-gear"/></svg>
     </button>
   </header>
 
-  <!-- Environment check -->
+  <!-- Phone: PIN gate -->
+  <section class="panel" id="v-pin" hidden aria-labelledby="pin-title">
+    <div class="pin-head">
+      <span class="mark" aria-hidden="true"></span>
+      <h2 id="pin-title">Enter the PIN from your Mac</h2>
+      <p class="notice-body" style="margin:0">On your Mac, open Video Downloader › Settings. The PIN is under “Use from my phone”.</p>
+    </div>
+    <form id="pin-form" autocomplete="off">
+      <label class="sr-only" for="pin">6-digit PIN</label>
+      <input class="pin-input" id="pin" inputmode="numeric" autocomplete="one-time-code" maxlength="7" placeholder="••••••" aria-describedby="pin-error">
+      <p class="pin-error" id="pin-error" role="alert" hidden></p>
+      <button class="btn btn-primary btn-lg btn-block" id="pin-go">Continue</button>
+    </form>
+  </section>
+
+  <!-- Missing tools -->
   <section class="panel" id="v-env" hidden aria-labelledby="env-title">
     <div class="notice">
       <div class="notice-icon"><svg class="icon"><use href="#i-alert"/></svg></div>
       <div>
-        <h2 class="notice-title" id="env-title">ffmpeg is not installed</h2>
-        <p class="notice-body">ffmpeg and ffprobe merge video with audio and check that files play in QuickTime. Run this in Terminal, then check again.</p>
+        <h2 class="notice-title" id="env-title">Part of the app is missing</h2>
+        <p class="notice-body" id="env-body">yt-dlp, ffmpeg or ffprobe couldn’t be found. Download Video Downloader again from GitHub.</p>
       </div>
-    </div>
-    <div class="code-row">
-      <code class="code" id="env-cmd">brew install ffmpeg</code>
-      <button class="btn" id="copy-cmd"><svg class="icon"><use href="#i-copy"/></svg><span>Copy</span></button>
     </div>
     <ul class="env-list" id="env-list"></ul>
     <div class="actions"><button class="btn btn-primary btn-lg btn-block" id="env-recheck">Check again</button></div>
   </section>
 
-  <!-- Main flow -->
-  <div class="stack" id="v-main" hidden>
+  <!-- Download -->
+  <div class="stack" id="v-main" hidden role="tabpanel" aria-labelledby="tab-download">
     <form class="field-wrap" id="url-form" autocomplete="off">
       <label for="url" class="sr-only">Video link</label>
       <svg class="icon field-icon"><use href="#i-link"/></svg>
       <input class="url-input" id="url" type="url" inputmode="url" spellcheck="false"
-             placeholder="Paste a link from YouTube, Instagram, TikTok…" autofocus>
+             placeholder="Paste a link from YouTube, Instagram, TikTok…">
       <span class="field-hint" aria-hidden="true">Return</span>
     </form>
+
+    <div class="clip" id="clip" hidden>
+      <svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg>
+      <span class="clip-text">On your clipboard: <b id="clip-url"></b></span>
+      <button class="btn btn-primary" id="clip-use">Use this link</button>
+      <button class="btn btn-quiet btn-icon" id="clip-dismiss" aria-label="Dismiss" title="Dismiss"><svg class="icon"><use href="#i-x"/></svg></button>
+    </div>
 
     <section class="panel" id="v-skeleton" hidden aria-busy="true" aria-label="Loading video details">
       <div class="media">
@@ -78,6 +112,14 @@
       </div>
 
       <div class="options" id="v-options">
+        <div class="existing" id="existing" hidden>
+          <div class="badge-ok"><svg class="icon"><use href="#i-check"/></svg></div>
+          <div class="existing-main">
+            <p class="existing-title" id="existing-title"></p>
+            <p class="existing-file" id="existing-file"></p>
+          </div>
+          <button class="btn only-mac" id="existing-reveal"><svg class="icon"><use href="#i-folder"/></svg>Show in Finder</button>
+        </div>
         <div class="opt-row">
           <span class="opt-label" id="lbl-mode">Download as</span>
           <div class="segmented" role="radiogroup" aria-labelledby="lbl-mode" id="mode">
@@ -140,9 +182,12 @@
             <div class="done-checks" id="done-checks"></div>
           </div>
         </div>
-        <div class="btn-row">
+        <div class="btn-row only-mac">
           <button class="btn btn-primary btn-lg" id="done-reveal"><svg class="icon"><use href="#i-folder"/></svg>Show in Finder</button>
           <button class="btn btn-lg" id="done-open"><svg class="icon"><use href="#i-play"/></svg>Open</button>
+        </div>
+        <div class="btn-row only-phone">
+          <a class="btn btn-primary btn-lg" id="done-save" download><svg class="icon"><use href="#i-down"/></svg>Save to this device</a>
         </div>
       </div>
     </section>
@@ -159,13 +204,49 @@
           </details>
         </div>
       </div>
-      <div class="btn-row">
+      <div class="btn-row" id="err-actions">
         <button class="btn btn-primary btn-lg" id="retry">Retry</button>
-        <button class="btn btn-lg" id="err-settings">Open Settings</button>
       </div>
+      <p class="err-more" id="err-more" hidden></p>
     </section>
   </div>
 
+  <!-- Convert -->
+  <div class="stack" id="v-convert" hidden role="tabpanel" aria-labelledby="tab-convert">
+    <section class="panel" aria-label="Convert to audio">
+      <div class="drop" id="drop">
+        <div class="drop-icon"><svg class="icon"><use href="#i-file-in"/></svg></div>
+        <p class="drop-title" id="drop-title">Drop video or audio files here</p>
+        <p class="drop-sub">They start converting as soon as you add them</p>
+        <button class="btn" id="choose">Choose files…</button>
+      </div>
+      <div class="convert-opts">
+        <div class="opt-row">
+          <span class="opt-label" id="lbl-cfmt">Convert to</span>
+          <div class="segmented" role="radiogroup" aria-labelledby="lbl-cfmt" id="cfmt">
+            <button type="button" role="radio" aria-checked="true" data-cf="mp3">MP3</button>
+            <button type="button" role="radio" aria-checked="false" data-cf="m4a">M4A</button>
+            <button type="button" role="radio" aria-checked="false" data-cf="wav">WAV</button>
+          </div>
+        </div>
+        <div class="opt-row" id="row-cq">
+          <span class="opt-label" id="lbl-cq">Quality</span>
+          <div class="segmented" role="radiogroup" aria-labelledby="lbl-cq" id="cq">
+            <button type="button" role="radio" aria-checked="true" data-q="192">Standard</button>
+            <button type="button" role="radio" aria-checked="false" data-q="320">High</button>
+          </div>
+        </div>
+        <p class="opt-note" id="c-note"></p>
+      </div>
+    </section>
+    <section id="v-files" hidden aria-labelledby="files-title">
+      <h2 class="section-title" id="files-title">Files</h2>
+      <ul class="files" id="files"></ul>
+      <p class="sr-only" id="files-status" aria-live="polite"></p>
+    </section>
+  </div>
+
+  <!-- Settings -->
   <section class="panel" id="v-settings" hidden aria-labelledby="settings-title">
     <div class="settings-head">
       <h2 id="settings-title">Settings</h2>
@@ -173,7 +254,10 @@
     </div>
     <div class="setting">
       <label class="setting-label" for="folder">Download folder</label>
-      <input class="text-input" id="folder" spellcheck="false">
+      <div class="code-row tight">
+        <input class="text-input" id="folder" spellcheck="false">
+        <button class="btn" id="choose-folder">Choose…</button>
+      </div>
       <p class="setting-help" id="folder-help">Created if it doesn’t exist</p>
     </div>
     <div class="setting">
@@ -197,15 +281,51 @@
       </div>
       <p class="setting-help" id="update-status" aria-live="polite">Update when a site that used to work stops working</p>
     </div>
+    <div class="setting">
+      <span class="setting-label" id="lbl-token">Connect Chrome extension</span>
+      <div class="code-row tight">
+        <code class="code" id="token"></code>
+        <button class="btn" id="copy-token"><svg class="icon"><use href="#i-copy"/></svg><span>Copy</span></button>
+      </div>
+      <p class="setting-help">Paste this once in the extension’s Options. Without it, Chrome can’t send links to the app.</p>
+    </div>
+    <div class="setting">
+      <div class="setting-row">
+        <span class="setting-label" style="margin:0" id="lbl-phone">Use from my phone (same Wi-Fi)</span>
+        <button class="switch" role="switch" aria-checked="false" aria-labelledby="lbl-phone" id="phone-switch"></button>
+      </div>
+      <p class="setting-help" id="phone-off-help">Open the app in your phone’s browser. Downloads still run on this Mac.</p>
+      <div id="phone-on" hidden>
+        <div class="phone-pair">
+          <div class="qr-box" id="qr"></div>
+          <dl class="pair-facts">
+            <dt>Scan, or open on your phone</dt>
+            <dd id="phone-url"></dd>
+            <dt>PIN</dt>
+            <dd class="pin-code" id="phone-pin"></dd>
+          </dl>
+        </div>
+        <p class="warn"><svg class="icon"><use href="#i-alert"/></svg><span>Anyone on this Wi-Fi who has the PIN can use the app. It turns off when you quit.</span></p>
+      </div>
+    </div>
     <p class="saved" id="saved" aria-live="polite"></p>
   </section>
 
+  <!-- Recent -->
   <section id="v-recent" hidden aria-labelledby="recent-title">
     <h2 class="section-title" id="recent-title">Recent downloads</h2>
     <ul class="recent" id="recent"></ul>
   </section>
 
-  <footer class="app-footer">Only download content you have the right to save.</footer>
+  <footer class="app-footer">
+    Only download content you have the right to save.
+    <div class="keys" aria-label="Keyboard shortcuts">
+      <span><kbd>⌘</kbd><kbd>V</kbd>Paste a link</span>
+      <span><kbd>Return</kbd>Download</span>
+      <span><kbd>Esc</kbd>Cancel</span>
+      <span><kbd>⌘</kbd><kbd>,</kbd>Settings</span>
+    </div>
+  </footer>
 </main>
 
 <script src="/static/app.js"></script>

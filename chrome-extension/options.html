@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Video Downloader options</title>
+<link rel="stylesheet" href="shared.css">
+<link rel="stylesheet" href="options.css">
+</head>
+<body>
+<form id="form">
+  <h1>Connect to the app</h1>
+  <p class="muted">In Video Downloader, open Settings and copy the token under “Connect Chrome extension”.</p>
+  <label for="token">Token</label>
+  <input id="token" autocomplete="off" spellcheck="false" required>
+  <label for="port">Port</label>
+  <input id="port" type="number" min="1024" max="65535" value="8765" required>
+  <p class="muted small">Leave this at 8765 unless you changed it.</p>
+  <div class="actions">
+    <button class="btn btn-primary" type="submit">Save and test</button>
+    <span id="status" role="status"></span>
+  </div>
+</form>
+<script src="options.js"></script>
+</body>
+</html>
