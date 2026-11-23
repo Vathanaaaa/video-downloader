@@ -4,3 +4,7 @@ data.json
 data.tmp
 .impeccable/
 .DS_Store
+.backup-2026-11-23/
+packaging/vendor/
+build/
+dist/

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Video Downloader</title>
+<link rel="stylesheet" href="shared.css">
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+<header>
+  <img src="icons/icon-32.png" width="20" height="20" alt="">
+  <span>Video Downloader</span>
+</header>
+<main id="main" aria-live="polite">
+  <p id="page" class="page"></p>
+
+  <div id="s-ready" hidden>
+    <div class="seg" role="radiogroup" aria-label="Download as">
+      <button role="radio" data-mode="video" aria-checked="true">Video</button>
+      <button role="radio" data-mode="audio" aria-checked="false">Audio</button>
+    </div>
+    <button id="send" class="btn btn-primary wide">Download video</button>
+    <p id="ready-note" class="note muted"></p>
+  </div>
+
+  <div id="s-job" hidden>
+    <div class="row"><span id="job-label">Sending…</span><span id="job-pct" class="muted"></span></div>
+    <div class="bar"><div id="job-fill"></div></div>
+    <p class="note muted">You can close this. The download continues in the app.</p>
+  </div>
+
+  <div id="s-done" hidden>
+    <p class="title ok">Saved to <span id="done-folder"></span></p>
+    <p id="done-name" class="note muted"></p>
+    <div class="actions"><button id="done-open" class="btn">Open app</button></div>
+  </div>
+
+  <div id="s-msg" hidden>
+    <p id="msg-title" class="title"></p>
+    <p id="msg-text" class="note muted"></p>
+    <div class="actions">
+      <button id="msg-action" class="btn" hidden></button>
+    </div>
+  </div>
+</main>
+<script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,832 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video Downloader — Ideas</title>
+<style>
+/* ===== App styles (shared with static/style.css) ===== */
+:root {
+  color-scheme: light;
+  --bg: #f0f0f3;
+  --panel: #ffffff;
+  --panel-2: #f6f6f8;
+  --line: #e1e1e6;
+  --line-strong: #c9c9d0;
+  --text: #1d1d1f;
+  --text-2: #5c5c66;
+  --text-3: #6e6e78;
+  --accent: #2f5bd3;
+  --accent-hover: #2650c0;
+  --accent-text: #ffffff;
+  --accent-soft: #e6ecfb;
+  --render: #a65800;
+  --render-soft: #fbefe1;
+  --ok: #1e7f43;
+  --ok-soft: #e3f3e8;
+  --danger: #c0322b;
+  --danger-soft: #fbe9e8;
+  --focus: #2f5bd3;
+  --shadow: 0 1px 2px rgba(20, 20, 40, .06), 0 8px 24px -8px rgba(20, 20, 40, .12);
+  --shadow-sm: 0 1px 2px rgba(20, 20, 40, .08);
+  --skeleton: #e8e8ec;
+  --skeleton-hi: #f4f4f7;
+  --radius: 14px;
+  --radius-sm: 9px;
+  --ease: cubic-bezier(.16, 1, .3, 1);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #18181b;
+    --panel: #232327;
+    --panel-2: #2b2b30;
+    --line: #36363c;
+    --line-strong: #4a4a52;
+    --text: #f2f2f4;
+    --text-2: #b0b0b8;
+    --text-3: #9a9aa3;
+    --accent: #7c97ff;
+    --accent-hover: #93a9ff;
+    --accent-text: #0f1530;
+    --accent-soft: #2a3150;
+    --render: #ffb24d;
+    --render-soft: #3d2e1a;
+    --ok: #5fd28a;
+    --ok-soft: #1d3326;
+    --danger: #ff7b72;
+    --danger-soft: #3d2222;
+    --focus: #7c97ff;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 10px 28px -10px rgba(0, 0, 0, .55);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .35);
+    --skeleton: #2e2e33;
+    --skeleton-hi: #38383e;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #18181b;
+  --panel: #232327;
+  --panel-2: #2b2b30;
+  --line: #36363c;
+  --line-strong: #4a4a52;
+  --text: #f2f2f4;
+  --text-2: #b0b0b8;
+  --text-3: #9a9aa3;
+  --accent: #7c97ff;
+  --accent-hover: #93a9ff;
+  --accent-text: #0f1530;
+  --accent-soft: #2a3150;
+  --render: #ffb24d;
+  --render-soft: #3d2e1a;
+  --ok: #5fd28a;
+  --ok-soft: #1d3326;
+  --danger: #ff7b72;
+  --danger-soft: #3d2222;
+  --focus: #7c97ff;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 10px 28px -10px rgba(0, 0, 0, .55);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .35);
+  --skeleton: #2e2e33;
+  --skeleton-hi: #38383e;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.45 -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--accent-soft); color: var(--text); }
+button, input, select { font: inherit; color: inherit; }
+:focus { outline: none; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 8px; }
+[hidden] { display: none !important; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.app {
+  width: 100%;
+  max-width: 592px;
+  margin: 0 auto;
+  padding: 28px 16px 32px;
+}
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.app-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+.icon { width: 18px; height: 18px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 40px; padding: 0 16px;
+  border: 1px solid var(--line-strong); border-radius: 10px;
+  background: var(--panel); color: var(--text);
+  font-weight: 500; font-size: 14px;
+  cursor: pointer; white-space: nowrap;
+  box-shadow: var(--shadow-sm);
+  transition: background .15s, border-color .15s, transform .1s;
+}
+.btn:hover { background: var(--panel-2); }
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: .5; cursor: default; }
+.btn-primary { background: var(--accent); border-color: transparent; color: var(--accent-text); }
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-lg { min-height: 48px; font-size: 16px; padding: 0 24px; }
+.btn-block { width: 100%; }
+.btn-quiet { border-color: transparent; background: transparent; box-shadow: none; color: var(--text-2); }
+.btn-quiet:hover { background: var(--panel-2); color: var(--text); }
+.btn-icon { width: 38px; min-height: 38px; padding: 0; }
+.link-btn { border: 0; background: none; padding: 4px 2px; color: var(--accent); font-weight: 500; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: transparent; }
+.link-btn:hover { text-decoration-color: currentColor; }
+
+/* Paste field */
+.field-wrap { position: relative; }
+.url-input {
+  width: 100%; height: 58px;
+  padding: 0 92px 0 48px;
+  border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--panel); box-shadow: var(--shadow);
+  font-size: 17px; caret-color: var(--accent);
+  transition: border-color .15s, box-shadow .15s;
+}
+.url-input::placeholder { color: var(--text-3); }
+.url-input:focus { border-color: var(--accent); box-shadow: var(--shadow), 0 0 0 4px var(--accent-soft); outline: none; }
+.field-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-3); pointer-events: none; }
+.field-hint {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  padding: 3px 8px; border: 1px solid var(--line); border-radius: 6px;
+  font-size: 12px; color: var(--text-3); background: var(--panel-2); pointer-events: none;
+}
+
+.stack > * + * { margin-top: 16px; }
+
+/* Panels */
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  animation: rise .35s var(--ease) both;
+}
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } }
+
+/* Media card */
+.media { display: flex; gap: 16px; align-items: flex-start; }
+.thumb {
+  position: relative; flex: none;
+  width: 168px; aspect-ratio: 16 / 9;
+  border-radius: 9px; overflow: hidden;
+  background: var(--panel-2);
+}
+.thumb img, .thumb .thumb-fake { width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumb-fake { background: linear-gradient(180deg, #9fb7c9 0%, #c8d3c0 48%, #6f8a5c 49%, #4f6b44 100%); }
+.thumb-time {
+  position: absolute; right: 6px; bottom: 6px;
+  padding: 1px 6px; border-radius: 5px;
+  background: rgba(0, 0, 0, .72); color: #fff;
+  font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums;
+}
+.media-meta { min-width: 0; flex: 1; padding-top: 2px; }
+.media-title {
+  margin: 0 0 4px; font-size: 16px; font-weight: 600; line-height: 1.3;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.media-sub { margin: 0; color: var(--text-2); font-size: 14px; }
+.media-sub span + span::before { content: ""; display: inline-block; width: 3px; height: 3px; margin: 0 8px 3px; border-radius: 50%; background: var(--text-3); vertical-align: middle; }
+.media-site { margin: 8px 0 0; font-size: 13px; color: var(--text-3); }
+
+/* Skeleton */
+.sk { background: linear-gradient(90deg, var(--skeleton) 0%, var(--skeleton-hi) 50%, var(--skeleton) 100%); background-size: 200% 100%; animation: shimmer 1.2s linear infinite; border-radius: 6px; }
+.sk-line { height: 14px; margin-bottom: 10px; }
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+
+/* Options */
+.options { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line); }
+.opt-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.opt-row + .opt-row { margin-top: 12px; }
+.opt-label { width: 92px; flex: none; font-size: 14px; color: var(--text-2); }
+.segmented {
+  display: inline-flex; padding: 3px; gap: 2px;
+  border-radius: 10px; background: var(--panel-2); border: 1px solid var(--line);
+}
+.segmented button {
+  min-width: 84px; min-height: 32px; padding: 0 14px;
+  border: 0; border-radius: 7px; background: transparent;
+  color: var(--text-2); font-weight: 500; font-size: 14px; cursor: pointer;
+  transition: background .2s var(--ease), color .2s;
+}
+.segmented button[aria-checked="true"] { background: var(--panel); color: var(--text); box-shadow: var(--shadow-sm), 0 0 0 1px var(--line); }
+.segmented.wide { display: flex; width: 100%; }
+.segmented.wide button { flex: 1; min-width: 0; padding: 0 6px; }
+.select-wrap { position: relative; flex: 1; min-width: 180px; }
+.select {
+  width: 100%; min-height: 38px; padding: 0 36px 0 12px;
+  border: 1px solid var(--line-strong); border-radius: 9px;
+  background: var(--panel); appearance: none; -webkit-appearance: none; cursor: pointer;
+  font-variant-numeric: tabular-nums;
+}
+.select-wrap .icon { position: absolute; right: 11px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; pointer-events: none; color: var(--text-2); }
+.opt-note { margin: 12px 0 0 104px; font-size: 13px; color: var(--text-3); }
+.actions { margin-top: 20px; }
+
+/* Progress */
+.steps { display: flex; gap: 8px; margin: 0 0 20px; padding: 0; list-style: none; }
+.steps li { flex: 1; font-size: 13px; color: var(--text-3); font-weight: 500; }
+.steps li::before { content: ""; display: block; height: 3px; margin-bottom: 8px; border-radius: 2px; background: var(--line); transition: background .3s; }
+.steps li.done { color: var(--text-2); }
+.steps li.done::before { background: var(--text-3); }
+.steps li.current { color: var(--text); }
+.steps li.current::before { background: var(--accent); }
+.steps li.current.render::before { background: var(--render); }
+
+.prog-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.prog-label { font-weight: 600; font-size: 15px; }
+.prog-pct { font-size: 26px; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.timeline {
+  position: relative; height: 10px; border-radius: 5px;
+  background: var(--panel-2); border: 1px solid var(--line);
+  background-image: repeating-linear-gradient(90deg, transparent 0 calc(10% - 1px), var(--line) calc(10% - 1px) 10%);
+}
+.timeline-fill {
+  position: absolute; inset: 0 auto 0 0; width: 0;
+  border-radius: 5px 0 0 5px; background: var(--accent);
+  transition: width .45s var(--ease);
+}
+.timeline-head {
+  position: absolute; top: -5px; bottom: -5px; left: 0; width: 2px;
+  margin-left: -1px; border-radius: 1px; background: var(--text);
+  transition: left .45s var(--ease);
+}
+.timeline-head::before {
+  content: ""; position: absolute; top: -3px; left: -4px; width: 10px; height: 6px;
+  border-radius: 2px 2px 5px 5px; background: var(--text);
+}
+.is-render .timeline-fill { background: var(--render); }
+.prog-stats { display: flex; gap: 24px; margin-top: 12px; font-size: 13px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.prog-stats b { color: var(--text); font-weight: 600; }
+.prog-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 20px; }
+.prog-note { font-size: 13px; color: var(--text-3); }
+
+/* Done */
+.done-head { display: flex; gap: 12px; align-items: flex-start; }
+.badge-ok { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--ok-soft); color: var(--ok); animation: pop .4s var(--ease) both; }
+@keyframes pop { from { transform: scale(.6); opacity: 0; } }
+.done-title { margin: 0; font-weight: 600; font-size: 16px; }
+.done-file { margin: 3px 0 0; font-size: 13px; color: var(--text-2); word-break: break-all; }
+.done-checks { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.chip { padding: 2px 8px; border-radius: 6px; font-size: 13px; font-weight: 500; background: var(--panel-2); color: var(--text-2); border: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+.btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+.btn-row .btn { flex: 1; min-width: 140px; }
+
+/* Error / notice */
+.notice { display: flex; gap: 12px; align-items: flex-start; }
+.notice-icon { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--danger-soft); color: var(--danger); }
+.notice-title { margin: 0; font-weight: 600; font-size: 16px; }
+.notice-body { margin: 4px 0 0; color: var(--text-2); font-size: 14px; }
+.notice-detail { margin: 12px 0 0; font-size: 13px; color: var(--text-3); }
+.notice-detail summary { cursor: pointer; }
+.notice-detail pre { margin: 8px 0 0; padding: 10px; border-radius: 8px; background: var(--panel-2); white-space: pre-wrap; word-break: break-word; font: 12px/1.5 ui-monospace, "SF Mono", Menlo, monospace; color: var(--text-2); }
+
+.code-row { display: flex; gap: 8px; margin-top: 14px; }
+.code {
+  flex: 1; display: flex; align-items: center; min-height: 40px; padding: 0 12px;
+  border-radius: 9px; background: var(--panel-2); border: 1px solid var(--line);
+  font: 14px ui-monospace, "SF Mono", Menlo, monospace; user-select: all; overflow-x: auto; white-space: nowrap;
+}
+.env-list { margin: 14px 0 0; padding: 0; list-style: none; font-size: 14px; }
+.env-list li { display: flex; justify-content: space-between; padding: 8px 0; border-top: 1px solid var(--line); }
+.env-list .ok { color: var(--ok); font-weight: 500; }
+.env-list .missing { color: var(--danger); font-weight: 500; }
+
+/* Recent */
+.section-title { margin: 32px 0 8px; font-size: 14px; font-weight: 600; color: var(--text-2); }
+.recent { margin: 0; padding: 0; list-style: none; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; }
+.recent li { display: flex; align-items: center; gap: 12px; padding: 12px 8px 12px 16px; }
+.recent li + li { border-top: 1px solid var(--line); }
+.recent-kind { flex: none; color: var(--text-3); }
+.recent-main { flex: 1; min-width: 0; }
+.recent-title { margin: 0; font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.recent-meta { margin: 1px 0 0; font-size: 13px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+.recent-meta span + span::before { content: ""; display: inline-block; width: 3px; height: 3px; margin: 0 7px 3px; border-radius: 50%; background: var(--text-3); vertical-align: middle; }
+.recent-actions { display: flex; flex: none; }
+.empty-recent { padding: 20px 16px; color: var(--text-3); font-size: 14px; text-align: center; }
+
+/* Settings */
+.settings-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.settings-head h2 { margin: 0; font-size: 17px; font-weight: 600; }
+.setting { padding: 16px 0; border-top: 1px solid var(--line); }
+.setting:first-of-type { border-top: 0; }
+.setting-label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; }
+.setting-help { margin: 8px 0 0; font-size: 13px; color: var(--text-3); }
+.text-input {
+  width: 100%; min-height: 40px; padding: 0 12px;
+  border: 1px solid var(--line-strong); border-radius: 9px; background: var(--panel);
+}
+.text-input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); outline: none; }
+.setting-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.version { font-size: 13px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.saved { font-size: 13px; color: var(--ok); font-weight: 500; }
+
+.app-footer { margin-top: 32px; text-align: center; font-size: 13px; color: var(--text-3); }
+
+@media (max-width: 520px) {
+  .app { padding-top: 18px; }
+  .media { flex-direction: column; gap: 12px; }
+  .thumb { width: 100%; }
+  .opt-label { width: 100%; }
+  .opt-note { margin-left: 0; }
+  .field-hint { display: none; }
+  .url-input { padding-right: 16px; font-size: 16px; }
+  .prog-stats { gap: 14px; flex-wrap: wrap; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+/* Brand mark + tabs */
+.mark { display: block; flex: none; background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAYAAACohjseAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAOKADAAQAAAABAAAAOAAAAAANV2hTAAAUrklEQVRoBY2aa4yd1XWG97nM1Zdie7AxvmSQoCAiDKqTAEKUCiJK3EQNdhGEEglSVVUqVKlNpUogtZHSH6hSa6n8AX5UlKCCogYSG4MEVCIVdpza2KBKdn3D2DgeD+PbeOyZM7dz+j7v2vuc4xik7PE537f3Xnut9a619trr+44r6bdorVarsmHDhlXz8/O/29fXt3ZqampJf29v/dLUVGpqfVWfnp4efTdTk4H5+TSrm2q1qj5jca+Z3IKOdSL6nPkggyc09d7eNKe2aNGisxo7pqGDr7zyykilUmkF5Rd/V754KqX169f/zvT09J/MN+cfEauvNFutq6BvtUDBFf6VVBEXCdOAuxr3JIPcZDro1YUo02klA6bLlNHP3918qtWKbFELWalytlar/U+tXn/l6quv/unbb7996bKFXZ0soWsk365bt+470zPTfz8/N3/T/PycrGztMpiqlA2QKCkIXQxC1bbymolZgBYy3XDfxqcbD7UwV9CL2HwzXaWCLzvrMGhNgHt6e/63r6//hx999NFrhXv39QqADz300MD+/fs3N6am/mJOwMJLKcliDsN6vS6QVX20lNUooK82IHQ1EizeYV/GWE/olmY+wURDYayWjKntAKOkqMmkjDXT7OxsmpmZ8XyoIKD1WhoYGNx81113/d0LL7wwW3hz7WigzuOPP96/e/fulxuNqU2zM7NWVGGgxQN5j7EkPBGK0RcTg4prN0tomGOsGApwfX29Djdm4Ndu2UH0mwI47w1Nr9CEuoBXHkiXLl10ZCEDw4nvj++++54/6wZZY3lpss7mRqPx+NycwOmvV4poYwtc3QoWJVG4AAwAGVbpZIYFYNsJ4knCQcGyn4I0/G/+YACPeBV5IavTB8zg4EDqVfIJb0YiE/2tIyOnesfGxt7NKqQ2wJtvvPmPp6cb/6ywrMBY2TItXLDQdIRM+DoseAXALsuzwFQZLODiFgVjFv7N5rzCXuEOdSywLN/noYq8HSDDADCKLSIbiEe93pMG+geScoWN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") center / contain no-repeat; }
+.app-header { gap: 12px; }
+.brand { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.brand .mark { width: 28px; height: 28px; }
+.tabs { display: inline-flex; padding: 3px; gap: 2px; border-radius: 10px; background: var(--panel-2); border: 1px solid var(--line); }
+.tabs button {
+  min-width: 92px; min-height: 30px; padding: 0 14px;
+  border: 0; border-radius: 7px; background: transparent;
+  color: var(--text-2); font-weight: 500; font-size: 14px; cursor: pointer;
+  transition: background .2s var(--ease), color .2s;
+}
+.tabs button[aria-selected="true"] { background: var(--panel); color: var(--text); box-shadow: var(--shadow-sm), 0 0 0 1px var(--line); }
+
+/* Convert */
+.drop {
+  display: grid; justify-items: center; gap: 6px;
+  padding: 24px 20px; border: 1.5px dashed var(--line-strong); border-radius: 12px;
+  background: var(--panel-2); text-align: center;
+  transition: border-color .15s, background .15s;
+}
+.drop.is-over { border-color: var(--accent); background: var(--accent-soft); }
+.drop-icon { display: grid; place-items: center; width: 40px; height: 40px; margin-bottom: 4px; border-radius: 50%; background: var(--panel); border: 1px solid var(--line); color: var(--text-2); }
+.drop-title { margin: 0; font-weight: 600; font-size: 16px; }
+.drop-sub { margin: 0 0 8px; font-size: 13px; color: var(--text-3); }
+.drop.compact { grid-template-columns: auto 1fr auto; justify-items: start; align-items: center; gap: 12px; padding: 12px 12px 12px 14px; text-align: left; }
+.drop.compact .drop-icon { width: 32px; height: 32px; margin: 0; }
+.drop.compact .drop-sub { display: none; }
+.drop.compact .drop-title { font-size: 14px; font-weight: 500; color: var(--text-2); }
+.convert-opts { margin-top: 20px; }
+
+.files { margin: 0; padding: 0; list-style: none; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; }
+.files li { display: flex; align-items: center; gap: 12px; padding: 12px 8px 12px 16px; }
+.files li + li { border-top: 1px solid var(--line); }
+.file-icon { flex: none; color: var(--text-3); }
+.file-icon.ok { color: var(--ok); }
+.file-icon.err { color: var(--danger); }
+.file-main { flex: 1; min-width: 0; }
+.file-name { margin: 0; font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.file-meta { margin: 1px 0 0; font-size: 13px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+.file-meta span + span::before { content: ""; display: inline-block; width: 3px; height: 3px; margin: 0 7px 3px; border-radius: 50%; background: var(--text-3); vertical-align: middle; }
+.file-meta.err { color: var(--danger); }
+.timeline.sm { height: 6px; margin: 8px 0 3px; border-radius: 3px; }
+.timeline.sm .timeline-fill { border-radius: 3px 0 0 3px; background: var(--render); }
+.timeline.sm .timeline-head { top: -4px; bottom: -4px; }
+.timeline.sm .timeline-head::before { top: -2px; left: -3px; width: 8px; height: 4px; }
+
+/* Settings: switch, token, phone */
+.switch {
+  position: relative; flex: none; width: 46px; height: 28px; padding: 0;
+  border: 0; border-radius: 999px; background: var(--line-strong); cursor: pointer;
+  transition: background .2s var(--ease);
+}
+.switch::after {
+  content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px;
+  border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
+  transition: transform .25s var(--ease);
+}
+.switch[aria-checked="true"] { background: var(--accent); }
+.switch[aria-checked="true"]::after { transform: translateX(18px); }
+.code-row.tight { margin-top: 0; }
+.phone-pair {
+  display: flex; gap: 20px; align-items: center; margin-top: 12px; padding: 16px;
+  border-radius: 12px; background: var(--panel-2); border: 1px solid var(--line);
+}
+.qr-box { flex: none; width: 128px; height: 128px; padding: 9px; border-radius: 10px; background: #fff; color: #111; }
+.qr-box svg { display: block; width: 100%; height: 100%; shape-rendering: crispEdges; }
+.pair-facts { margin: 0; min-width: 0; }
+.pair-facts dt { font-size: 13px; color: var(--text-3); }
+.pair-facts dd { margin: 1px 0 10px; font-weight: 600; word-break: break-all; }
+.pair-facts dd:last-child { margin-bottom: 0; }
+.pin-code { font: 600 24px/1.2 ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: .06em; font-variant-numeric: tabular-nums; }
+.warn { display: flex; gap: 8px; align-items: flex-start; margin: 12px 0 0; font-size: 13px; color: var(--text-2); }
+.warn .icon { width: 16px; height: 16px; margin-top: 1px; color: var(--render); }
+
+/* Phone (PIN gate, save button) */
+.pin-head { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; margin-bottom: 20px; }
+.pin-head .mark { width: 44px; height: 44px; }
+.pin-head h2 { margin: 4px 0 0; font-size: 18px; font-weight: 600; }
+.pin-input {
+  width: 100%; height: 60px; margin-bottom: 12px;
+  border: 1px solid var(--line-strong); border-radius: 12px; background: var(--panel);
+  text-align: center; font: 600 28px ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: .35em; font-variant-numeric: tabular-nums;
+}
+.pin-input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); outline: none; }
+.pin-input[aria-invalid="true"] { border-color: var(--danger); }
+.pin-error { margin: 0 0 12px; font-size: 13px; color: var(--danger); text-align: center; }
+.only-phone { display: none !important; }
+.is-phone .only-phone { display: flex !important; }
+.is-phone .only-mac { display: none !important; }
+
+/* Chrome extension popup */
+.popup { width: 340px; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); box-shadow: var(--shadow); font-size: 14px; }
+.pop-head { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-weight: 600; font-size: 13px; }
+.pop-head .mark { width: 20px; height: 20px; }
+.pop-head .btn-icon { width: 30px; min-height: 30px; margin-left: auto; }
+.pop-head .btn-icon .icon { width: 16px; height: 16px; }
+.pop-page { padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); }
+.pop-title { margin: 0; font-weight: 600; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.pop-host { margin: 2px 0 0; font-size: 13px; color: var(--text-3); }
+.pop-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+.pop-note { margin: 10px 0 0; font-size: 13px; color: var(--text-3); }
+.pop-status { margin-top: 12px; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); }
+.pop-status .prog-head { margin-bottom: 8px; }
+.pop-status .prog-pct { font-size: 18px; }
+.pop-status .notice-icon, .pop-status .badge-ok { width: 28px; height: 28px; }
+.pop-status .notice-icon .icon, .pop-status .badge-ok .icon { width: 16px; height: 16px; }
+.pop-status .notice-title, .pop-status .done-title { font-size: 14px; }
+.pop-status .notice-body { font-size: 13px; margin-top: 2px; }
+.pop-status .done-file { font-size: 13px; }
+.pop-status .link-btn { margin-top: 6px; padding-left: 0; font-size: 13px; }
+
+/* Touch screens: 44 px targets */
+@media (pointer: coarse) {
+  .btn-icon { width: 44px; min-height: 44px; }
+  .segmented button, .tabs button { min-height: 40px; }
+  .btn { min-height: 44px; }
+}
+
+@media (max-width: 520px) {
+  .app-header { flex-wrap: wrap; }
+  .tabs { order: 3; display: flex; width: 100%; }
+  .tabs button { flex: 1; }
+  .phone-pair { flex-direction: column; align-items: flex-start; }
+  .drop.compact { grid-template-columns: auto 1fr; }
+  .drop.compact .btn { grid-column: 1 / -1; width: 100%; }
+}
+
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3.2-3.2a4.5 4.5 0 0 0-6.4-6.4L12 5.6"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3.2 3.2a4.5 4.5 0 0 0 6.4 6.4l1.2-1.2"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 8v5"/><path d="M12 16.5v.01"/><circle cx="12" cy="12" r="9"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h4.2l2 2h8.8A1.5 1.5 0 0 1 21 9.5v8a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></symbol>
+  <symbol id="i-film" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 5v14M17 5v14M3 9.5h4M3 14.5h4M17 9.5h4M17 14.5h4"/></symbol>
+  <symbol id="i-wave" viewBox="0 0 24 24"><path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 11v2"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v11"/><path d="m7 10.5 5 5 5-5"/><path d="M5 20h14"/></symbol>
+  <symbol id="i-file-in" viewBox="0 0 24 24"><path d="M12 3v10"/><path d="m8 9.5 4 4 4-4"/><path d="M4 15v3.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V15"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></symbol>
+</svg>
+<style>
+/* ===== Ideas page ===== */
+.ideas { max-width: 1120px; margin: 0 auto; padding: 40px 24px 64px; }
+.ideas-head { max-width: 64ch; margin-bottom: 40px; }
+.ideas-head h1 { margin: 0 0 8px; font-size: 26px; font-weight: 600; letter-spacing: -0.015em; }
+.ideas-head p { margin: 0; color: var(--text-2); }
+.ideas-head .theme-row { margin-top: 16px; }
+.group-title { margin: 48px 0 4px; font-size: 18px; font-weight: 600; }
+.group-sub { margin: 0 0 8px; font-size: 14px; color: var(--text-3); }
+.idea { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: 40px; padding: 32px 0; border-top: 1px solid var(--line); align-items: start; }
+.idea h2 { margin: 0 0 8px; font-size: 17px; font-weight: 600; }
+.idea p { margin: 0 0 12px; font-size: 14px; color: var(--text-2); }
+.idea .facts { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0; padding: 0; list-style: none; font-size: 13px; color: var(--text-3); }
+.idea .facts b { color: var(--text); font-weight: 500; }
+.stage { display: grid; justify-items: center; padding: 28px 20px; border-radius: 16px; background: var(--panel-2); border: 1px solid var(--line); }
+.stage > * { width: 100%; max-width: 560px; }
+.stage .panel { animation: none; }
+.hl { box-shadow: 0 0 0 2px var(--accent-soft), 0 0 0 3px var(--accent); border-radius: 12px; }
+
+/* Clipboard pickup */
+.clip { display: flex; align-items: center; gap: 12px; margin-top: 8px; padding: 8px 8px 8px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); box-shadow: var(--shadow-sm); font-size: 14px; }
+.clip .icon { color: var(--text-3); }
+.clip-text { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-2); }
+.clip-text b { color: var(--text); font-weight: 500; }
+.clip .btn { min-height: 32px; padding: 0 12px; font-size: 13px; }
+
+/* Size per option */
+.size-list { margin: 0; padding: 4px; list-style: none; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--panel); box-shadow: var(--shadow); font-variant-numeric: tabular-nums; }
+.size-list li { display: flex; justify-content: space-between; gap: 16px; padding: 8px 12px; border-radius: 6px; font-size: 14px; }
+.size-list li span:last-child { color: var(--text-3); }
+.size-list li[aria-selected="true"] { background: var(--accent); color: var(--accent-text); }
+.size-list li[aria-selected="true"] span:last-child { color: inherit; opacity: .8; }
+
+/* Trim */
+.trim { position: relative; height: 40px; margin: 8px 0 4px; border-radius: 8px; background: var(--panel-2); border: 1px solid var(--line);
+  background-image: repeating-linear-gradient(90deg, transparent 0 calc(5% - 1px), var(--line) calc(5% - 1px) 5%); }
+.trim-sel { position: absolute; top: -1px; bottom: -1px; left: 21%; right: 37%; border: 2px solid var(--render); border-radius: 6px; background: color-mix(in srgb, var(--render) 14%, transparent); }
+.trim-sel::before, .trim-sel::after { content: ""; position: absolute; top: 8px; bottom: 8px; width: 4px; border-radius: 2px; background: var(--render); }
+.trim-sel::before { left: -3px; } .trim-sel::after { right: -3px; }
+.trim-times { display: flex; justify-content: space-between; font: 13px ui-monospace, "SF Mono", Menlo, monospace; color: var(--text-3); font-variant-numeric: tabular-nums; }
+.trim-io { display: flex; gap: 12px; margin-top: 12px; }
+.trim-io label { display: grid; gap: 4px; font-size: 13px; color: var(--text-2); }
+.trim-io input { width: 96px; min-height: 36px; padding: 0 10px; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--panel); font: 14px ui-monospace, "SF Mono", Menlo, monospace; font-variant-numeric: tabular-nums; }
+
+/* Queue */
+.queue .files li { padding-top: 10px; padding-bottom: 10px; }
+.qthumb { flex: none; width: 64px; aspect-ratio: 16 / 9; border-radius: 6px; background: linear-gradient(180deg, #9fb7c9, #6f8a5c); }
+.qthumb.b { background: linear-gradient(180deg, #2b2d35, #6b4f3a); }
+.qthumb.c { background: linear-gradient(180deg, #d9c7a8, #8a6e52); }
+.timeline.sm.dl .timeline-fill { background: var(--accent); }
+
+/* Notification + dock */
+.mac-note { display: flex; gap: 12px; align-items: flex-start; max-width: 380px; margin: 0 auto; padding: 12px 14px; border-radius: 16px; background: color-mix(in srgb, var(--panel) 88%, transparent); border: 1px solid var(--line); box-shadow: var(--shadow); font-size: 13px; }
+.mac-note .mark { width: 36px; height: 36px; }
+.mac-note b { display: block; font-weight: 600; }
+.mac-note span { color: var(--text-2); }
+.mac-note time { margin-left: auto; color: var(--text-3); font-size: 12px; }
+.dock { display: flex; justify-content: center; gap: 12px; margin-top: 24px; }
+.dock-icon { position: relative; width: 56px; height: 56px; border-radius: 12px; background: var(--panel); border: 1px solid var(--line); }
+.dock-icon .mark { position: absolute; inset: 4px; width: auto; height: auto; }
+.dock-bar { position: absolute; z-index: 1; left: 6px; right: 6px; bottom: 6px; height: 6px; border-radius: 3px; background: rgba(120, 120, 128, .6); overflow: hidden; }
+.dock-bar i { display: block; height: 100%; width: 62%; background: #fff; }
+.dock-label { margin-top: 8px; text-align: center; font-size: 12px; color: var(--text-3); }
+
+/* Keycaps */
+.keys { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 20px; font-size: 13px; color: var(--text-3); }
+kbd { display: inline-block; min-width: 22px; margin-right: 6px; padding: 1px 6px; border: 1px solid var(--line-strong); border-bottom-width: 2px; border-radius: 5px; background: var(--panel); color: var(--text-2); font: 12px/18px -apple-system, BlinkMacSystemFont, sans-serif; text-align: center; }
+
+/* Recent with thumbs */
+.recent.thumbs li { gap: 12px; }
+.search-mini { position: relative; margin-bottom: 8px; }
+.search-mini .icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-3); }
+.search-mini input { width: 100%; min-height: 36px; padding: 0 12px 0 36px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel); }
+.filter-row { display: flex; gap: 6px; margin-bottom: 12px; }
+.filter-row .chip[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+/* Drop on window */
+.dropall { position: relative; height: 220px; border-radius: 14px; background: var(--bg); border: 1px solid var(--line); overflow: hidden; }
+.dropall::after { content: ""; position: absolute; inset: 10px; border: 2px dashed var(--accent); border-radius: 10px; background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.dropall p { position: relative; z-index: 1; display: grid; place-items: center; height: 100%; margin: 0; text-align: center; font-weight: 500; color: var(--text); }
+.dropall p span { display: block; margin-top: 4px; font-size: 13px; font-weight: 400; color: var(--text-2); }
+
+@media (max-width: 860px) {
+  .idea { grid-template-columns: 1fr; gap: 16px; }
+}
+</style>
+
+<main class="ideas">
+  <header class="ideas-head">
+    <h1>Ideas for Video Downloader</h1>
+    <p>Each idea comes with a preview built from the app’s own styles at real size. They are grouped by how much they help and how much they cost. None of them are in the app yet. They go beyond the A–F spec, so I’d only build the ones you pick.</p>
+    <div class="theme-row"><button class="btn" id="theme">Theme: auto</button></div>
+  </header>
+
+  <h2 class="group-title">Small, high value</h2>
+  <p class="group-sub">Under a day each. No new dependencies.</p>
+
+  <section class="idea">
+    <div>
+      <h2>Pick up the link from the clipboard</h2>
+      <p>When the window comes to the front and the clipboard holds a video link, offer it under the field. Most downloads start with “copy link in browser, switch to app”, so this saves the paste step every time.</p>
+      <ul class="facts"><li><b>Effort</b> small</li><li><b>Where</b> Download tab</li><li><b>Note</b> reads the clipboard only when the app is focused</li></ul>
+    </div>
+    <div class="stage">
+      <div>
+        <div class="field-wrap">
+          <svg class="icon field-icon"><use href="#i-link"/></svg>
+          <input class="url-input" placeholder="Paste a link from YouTube, Instagram, TikTok…">
+          <span class="field-hint">Return</span>
+        </div>
+        <div class="clip hl">
+          <svg class="icon"><use href="#i-copy"/></svg>
+          <span class="clip-text">On your clipboard: <b>instagram.com/reels/Deeb1BZMBVJ</b></span>
+          <button class="btn btn-primary">Use this link</button>
+          <button class="btn btn-quiet btn-icon" aria-label="Dismiss"><svg class="icon"><use href="#i-x"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="idea">
+    <div>
+      <h2>Show the file size for each quality</h2>
+      <p>The resolution menu currently lists only heights. yt-dlp already reports sizes when it fetches the details, so each option can show what you’ll get on disk. That makes it easy to pick 720p over 1080p on a long video.</p>
+      <ul class="facts"><li><b>Effort</b> small</li><li><b>Where</b> Download options</li><li><b>Note</b> some sites report no size, so those show “size unknown”</li></ul>
+    </div>
+    <div class="stage">
+      <ul class="size-list hl" role="listbox" aria-label="Resolution" style="max-width:320px">
+        <li><span>Best (1080p)</span><span>48.2 MB</span></li>
+        <li aria-selected="true"><span>1080p</span><span>48.2 MB</span></li>
+        <li><span>720p</span><span>21.7 MB</span></li>
+        <li><span>480p</span><span>9.8 MB</span></li>
+        <li><span>360p</span><span>5.1 MB</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="idea">
+    <div>
+      <h2>Already downloaded? Say so</h2>
+      <p>If the same video is in the recent list and the file still exists, show that before you download it again, with a way to jump to the file.</p>
+      <ul class="facts"><li><b>Effort</b> small</li><li><b>Where</b> media card</li><li><b>Note</b> matched by the video id already in file names</li></ul>
+    </div>
+    <div class="stage">
+      <section class="panel">
+        <div class="media">
+          <div class="thumb"><div class="thumb-fake"></div><span class="thumb-time">0:19</span></div>
+          <div class="media-meta">
+            <h3 class="media-title">Me at the zoo</h3>
+            <p class="media-sub"><span>jawed</span><span>0:19</span></p>
+            <p class="media-site">youtube.com</p>
+          </div>
+        </div>
+        <div class="options">
+          <div class="done-head hl" style="padding:12px">
+            <div class="badge-ok" style="animation:none"><svg class="icon"><use href="#i-check"/></svg></div>
+            <div>
+              <p class="done-title">You saved this on Nov 14</p>
+              <p class="done-file">Me at the zoo [jNQXAC9IVRw].mp4 · 720p · 0.8 MB</p>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary"><svg class="icon"><use href="#i-folder"/></svg>Show in Finder</button>
+            <button class="btn">Download again</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <section class="idea">
+    <div>
+      <h2>Errors that fix themselves in one click</h2>
+      <p>The Instagram error currently tells you to go to Settings. Instead, offer the fix right there: retry with the browser you’re logged in to. That browser is saved as the default for next time.</p>
+      <ul class="facts"><li><b>Effort</b> small</li><li><b>Where</b> error panel</li><li><b>Note</b> lists only browsers that are installed</li></ul>
+    </div>
+    <div class="stage">
+      <section class="panel">
+        <div class="notice">
+          <div class="notice-icon"><svg class="icon"><use href="#i-alert"/></svg></div>
+          <div>
+            <p class="notice-title">Instagram wants you logged in</p>
+            <p class="notice-body">Use your login from a browser to get this reel.</p>
+          </div>
+        </div>
+        <div class="btn-row hl" style="padding:8px">
+          <button class="btn btn-primary">Retry with Chrome</button>
+          <button class="btn">Retry with Arc</button>
+          <button class="btn">Safari</button>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <section class="idea">
+    <div>
+      <h2>Keyboard shortcuts you can see</h2>
+      <p>The app already supports ⌘V. Add Return to download and ⌘, for Settings, and show them quietly in the footer so people find them.</p>
+      <ul class="facts"><li><b>Effort</b> small</li><li><b>Where</b> footer</li></ul>
+    </div>
+    <div class="stage">
+      <div class="keys hl" style="padding:12px">
+        <span><kbd>⌘</kbd><kbd>V</kbd>Paste a link</span>
+        <span><kbd>Return</kbd>Download</span>
+        <span><kbd>Esc</kbd>Cancel</span>
+        <span><kbd>⌘</kbd><kbd>,</kbd>Settings</span>
+      </div>
+    </div>
+  </section>
+
+  <h2 class="group-title">Bigger features</h2>
+  <p class="group-sub">One to three days each. They change how the app gets used.</p>
+
+  <section class="idea">
+    <div>
+      <h2>Trim before you download</h2>
+      <p>Drag the in and out points on the timeline and download only that part. yt-dlp can fetch just a section, so a 2-hour stream doesn’t have to come down whole for a 20-second clip. This also puts the timeline, already the app’s signature, to real use.</p>
+      <ul class="facts"><li><b>Effort</b> medium</li><li><b>Where</b> Download options</li><li><b>Note</b> cuts land on the nearest keyframe unless re-encoded</li></ul>
+    </div>
+    <div class="stage">
+      <section class="panel">
+        <div class="opt-row" style="justify-content:space-between">
+          <span class="setting-label" style="margin:0">Part to download</span>
+          <button class="link-btn">Whole video</button>
+        </div>
+        <div class="trim hl"><div class="trim-sel" aria-hidden="true"></div></div>
+        <div class="trim-times"><span>0:00</span><span>0:19</span></div>
+        <div class="trim-io">
+          <label>Start<input value="0:04.0"></label>
+          <label>End<input value="0:12.0"></label>
+          <span class="prog-note" style="align-self:end;padding-bottom:8px">8 seconds</span>
+        </div>
+        <div class="actions"><button class="btn btn-primary btn-lg btn-block">Download 0:04 – 0:12</button></div>
+      </section>
+    </div>
+  </section>
+
+  <section class="idea">
+    <div>
+      <h2>A queue for several links</h2>
+      <p>Paste three links in a row, or a list, and they line up and download one after another. It reuses the per-file list from Convert, so both tabs behave the same way.</p>
+      <ul class="facts"><li><b>Effort</b> medium</li><li><b>Where</b> Download tab</li><li><b>Note</b> one at a time, which keeps Instagram from rate-limiting</li></ul>
+    </div>
+    <div class="stage queue">
+      <ul class="files hl">
+        <li>
+          <span class="qthumb"></span>
+          <div class="file-main"><p class="file-name">Me at the zoo</p><p class="file-meta"><span>720p MP4</span><span>Downloading 64%</span></p>
+            <div class="timeline sm dl"><div class="timeline-fill" style="width:64%"></div><div class="timeline-head" style="left:64%"></div></div></div>
+          <button class="btn btn-quiet btn-icon" aria-label="Cancel"><svg class="icon"><use href="#i-x"/></svg></button>
+        </li>
+        <li>
+          <span class="qthumb b"></span>
+          <div class="file-main"><p class="file-name">Reel: night market in Phnom Penh</p><p class="file-meta"><span>MP4</span><span>Waiting</span></p></div>
+          <button class="btn btn-quiet btn-icon" aria-label="Cancel"><svg class="icon"><use href="#i-x"/></svg></button>
+        </li>
+        <li>
+          <span class="qthumb c"></span>
+          <div class="file-main"><p class="file-name">Lecture 4: color grading basics</p><p class="file-meta"><span>MP3</span><span>Waiting</span></p></div>
+          <button class="btn btn-quiet btn-icon" aria-label="Cancel"><svg class="icon"><use href="#i-x"/></svg></button>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="idea">
+    <div>
+      <h2>Drop a link anywhere on the window</h2>
+      <p>Drag a link from Chrome or Safari onto the app and it starts, as you can with files in Convert. Dropping files on the Download tab switches to Convert.</p>
+      <ul class="facts"><li><b>Effort</b> small to medium</li><li><b>Where</b> whole window</li></ul>
+    </div>
+    <div class="stage">
+      <div class="dropall hl"><p>Drop to download<span>youtube.com/watch?v=jNQXAC9IVRw</span></p></div>
+    </div>
+  </section>
+
+  <section class="idea">
+    <div>
+      <h2>Recent list with thumbnails and search</h2>
+      <p>The recent list keeps 10 items. Showing the thumbnail you saw when downloading, plus a quick filter, makes it a real shortcut back to your files. It still has no database: a small cached thumbnail sits next to the settings file.</p>
+      <ul class="facts"><li><b>Effort</b> medium</li><li><b>Where</b> Recent downloads</li><li><b>Note</b> could keep more than 10 once it’s searchable</li></ul>
+    </div>
+    <div class="stage">
+      <div>
+        <div class="search-mini"><svg class="icon"><use href="#i-search"/></svg><input placeholder="Filter"></div>
+        <div class="filter-row"><button class="chip" aria-pressed="true">All</button><button class="chip">Video</button><button class="chip">Audio</button></div>
+        <ul class="recent thumbs hl">
+          <li><span class="qthumb"></span><div class="recent-main"><p class="recent-title">Me at the zoo</p><p class="recent-meta"><span>MP4</span><span>720p</span><span>Just now</span></p></div><div class="recent-actions"><button class="btn btn-quiet btn-icon" aria-label="Show in Finder"><svg class="icon"><use href="#i-folder"/></svg></button></div></li>
+          <li><span class="qthumb b"></span><div class="recent-main"><p class="recent-title">Studio walkthrough, behind the scenes</p><p class="recent-meta"><span>MP4</span><span>1080p</span><span>Today</span></p></div><div class="recent-actions"><button class="btn btn-quiet btn-icon" aria-label="Show in Finder"><svg class="icon"><use href="#i-folder"/></svg></button></div></li>
+          <li><span class="qthumb c"></span><div class="recent-main"><p class="recent-title">Interview room tone reference</p><p class="recent-meta"><span>MP3</span><span>Today</span></p></div><div class="recent-actions"><button class="btn btn-quiet btn-icon" aria-label="Show in Finder"><svg class="icon"><use href="#i-folder"/></svg></button></div></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="idea">
+    <div>
+      <h2>Notification and Dock progress</h2>
+      <p>Long downloads happen in the background. Show progress on the Dock icon and a macOS notification when a file is ready, with a click that reveals it in Finder.</p>
+      <ul class="facts"><li><b>Effort</b> medium</li><li><b>Where</b> macOS</li><li><b>Note</b> needs pyobjc, a new dependency you’d have to approve</li></ul>
+    </div>
+    <div class="stage">
+      <div>
+        <div class="mac-note hl">
+          <span class="mark" aria-hidden="true"></span>
+          <div><b>Video Downloader</b><span>Me at the zoo is ready. Click to show in Finder.</span></div>
+          <time>now</time>
+        </div>
+        <div class="dock"><div><div class="dock-icon"><span class="mark" aria-hidden="true"></span><div class="dock-bar"><i></i></div></div><p class="dock-label">Dock, 62%</p></div></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+(() => {
+  const themes = ['auto', 'light', 'dark']; let i = 0;
+  document.getElementById('theme').addEventListener('click', (e) => {
+    i = (i + 1) % 3; const t = themes[i];
+    if (t === 'auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', t);
+    e.target.textContent = 'Theme: ' + t;
+  });
+})();
+</script>
+
+</body>
+</html>
